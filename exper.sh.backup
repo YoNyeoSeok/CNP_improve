@@ -1,0 +1,4 @@
+python main.py --learning_rate 1e-5 --log_folder 1e-5_after700000 --load_model logs/1e-5_after600000/99999.pt --max_iter 99999
+python main.py --learning_rate 1e-5 --log_folder 1e-5_after800000 --load_model logs/1e-5_after700000/99999.pt --max_iter 99999
+python main.py --learning_rate 1e-5 --log_folder 1e-5_after900000 --load_model logs/1e-5_after800000/99999.pt --max_iter 99999
+python main.py --learning_rate 1e-5 --log_folder 1e-5_after1000000 --load_model logs/1e-5_after900000/99999.pt --max_iter 99999
