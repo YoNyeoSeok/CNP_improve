@@ -1,3 +1,7 @@
+"""
+python main.py 
+"""
+
 from matplotlib import pyplot as plt
 import numpy as np
 import torch
@@ -138,7 +142,7 @@ def main():
 
             plt.savefig('logs/%s/%05d.png'%(args.log_folder, t))
             torch.save(model, "logs/%s/%05d.pt"%(args.log_folder, t))
-    
+         
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
