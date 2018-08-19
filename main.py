@@ -30,6 +30,8 @@ parser.add_argument("--fig_show", metavar='S', type=bool, default=False,
         help="figure show during traing or not (default=False)")
 parser.add_argument("--load_model", type=str,
         help="load model. format: folder/iteration")
+parser.add_argument("--model_layers", default=None,
+        help="model layers: default=None, means {'h':[8, 32, 128], 'g':[129, 64, 32, 16, 8]}")
 args = parser.parse_args()
 
 def plot_fig(fig, x, y_min, y_cov, color='k'):
@@ -49,6 +51,8 @@ def main():
 
     if args.load_model is not None:
         model = torch.load(args.load_model)
+    elif args.model_layers is not None:
+        model = CNP_Net(io_dims=[1, 1], n_layers=[3, 5], layers_dim={'h':[128, 128, 128], 'g':[129, 128, 128, 128, 128]}).float()
     else:
         model = CNP_Net().float()
 
