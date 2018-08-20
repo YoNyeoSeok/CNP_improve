@@ -98,11 +98,12 @@ def main():
            
             loss_ = 0
             for n in range(batch_size['N']):
+                permutation = np.random.permutation(n_observation)
                 N = np.random.randint(1, n_observation)
 
-                permutation = np.random.permutation(n_observation)
                 x_train = x[permutation[:N]]
                 y_train = y[permutation[:N]]
+
                 gp.fit(x_train, y_train)
                 y_mu, y_cov = gp.predict(x_plot, return_cov=True)
         
@@ -122,7 +123,7 @@ def main():
         with open("logs/%s/log.txt"%args.log_folder, "a") as log_file:
             log_file.write("%5d\t%10.4f\n"%(t, loss.item()))
         
-        if t % 100 == 0:
+        if t % 1000 == 0:
             print('%5d'%t, '%10.4f'%loss.item())
             plt.clf()
             plt.xlim(x_min, x_max)
