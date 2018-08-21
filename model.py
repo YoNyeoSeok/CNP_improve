@@ -57,7 +57,7 @@ class CNP_Net(nn.Module):
         self.phi = self.net_g(self.xr)
 
         self.mu = self.phi[:,:1]
-        self.sig = 1/self.softplus(self.phi[:,1:])
+        self.sig = self.softplus(self.phi[:,1:])
     
         normals = [MultivariateNormal(mu, torch.diag(cov)) for mu, cov in 
                 zip(self.mu, self.sig**2)]
