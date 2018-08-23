@@ -30,8 +30,10 @@ parser.add_argument("--fig_show", metavar='S', type=bool, default=False,
         help="figure show during traing or not (default=False)")
 parser.add_argument("--load_model", type=str,
         help="load model. format: folder/iteration")
-parser.add_argument("--model_layers", default=None,
+parser.add_argument("--model_layers", nargs='?', default=None,
         help="model layers: default=None, means {'h':[8, 32, 128], 'g':[129, 64, 32, 16, 8]}")
+parser.add_argument("--precision", nargs='?', default=None,
+        help="change variance to precision (inverse) option")
 args = parser.parse_args()
 
 def plot_fig(fig, x, y_min, y_cov, color='k'):
@@ -96,10 +98,12 @@ def main():
            
             loss_ = 0
             for n in range(batch_size['N']):
+                permutation = np.random.permutation(n_observation)
                 N = np.random.randint(1, n_observation)
-           
-                x_train = x[:N]
-                y_train = y[:N]
+
+                x_train = x[permutation[:N]]
+                y_train = y[permutation[:N]]
+
                 gp.fit(x_train, y_train)
                 y_mu, y_cov = gp.predict(x_plot, return_cov=True)
         
@@ -119,7 +123,7 @@ def main():
         with open("logs/%s/log.txt"%args.log_folder, "a") as log_file:
             log_file.write("%5d\t%10.4f\n"%(t, loss.item()))
         
-        if t % 100 == 0:
+        if t % 1000 == 0:
             print('%5d'%t, '%10.4f'%loss.item())
             plt.clf()
             plt.xlim(x_min, x_max)
