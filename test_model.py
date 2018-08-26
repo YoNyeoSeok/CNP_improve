@@ -67,4 +67,4 @@ class CNP_Net(nn.Module):
         for p in log_probs:
             log_prob += p
         
-        return self.phi, log_prob/len(log_probs)
+        return self.mu, self.sig, log_prob/len(log_probs)
