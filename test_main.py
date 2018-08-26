@@ -137,8 +137,8 @@ def main():
                     torch.tensor(np.zeros(n_observation).reshape(-1, 1))),
                 dim=1).float()
             predict_y_mu_, predict_y_cov_, _ = model(training_set, test_set)
-            predict_y_mu = predict_y_mu_.data.numpy()
-            predict_y_cov = np.diag(predict_y_cov_.data.numpy())**2
+            predict_y_mu = predict_y_mu_.reshape(-1).data.numpy()
+            predict_y_cov = np.diag(predict_y_cov_.reshape(-1).data.numpy())**2
 
             plot_fig(fig, x_plot, predict_y_mu, predict_y_cov, color='b')
 
@@ -171,9 +171,9 @@ def main():
     test_set = torch.cat((torch.tensor(x_plot),
             torch.tensor(np.zeros(n_observation).reshape(-1, 1))),
         dim=1).float()
-    phi, _ = model(training_set, test_set)
-    predict_y_mu = phi[:,0].data.numpy()
-    predict_y_cov = np.diag(phi[:,1].data.numpy())**2
+    predict_y_mu_, predict_y_cov_, _ = model(training_set, test_set)
+    predict_y_mu = predict_y_mu_.reshape(-1).data.numpy()
+    predict_y_cov = np.diag(predict_y_cov_.reshape(-1).data.numpy())**2
 
     plot_fig(fig, x_plot, predict_y_mu, predict_y_cov, color='b')
 
