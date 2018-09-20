@@ -4,3 +4,4 @@ logs/*
 tests/*
 *.pyc
 *.backup
+*.un~

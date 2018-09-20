@@ -25,11 +25,12 @@ class Net_h(nn.Module):
         return x
         
 class Net_g(nn.Module):
-    def __init__(self, layers_dim, output_dim):
+    def __init__(self, layers_dim, io_dims):
         super(Net_g, self).__init__()
+        layers_dim[0] += io_dims[0]
         net_g = [nn.Linear(layers_dim[i-1], layers_dim[i]) 
                  for i in range(1, len(layers_dim))]
-        net_g_ = [nn.Linear(layers_dim[-1], output_dim)]
+        net_g_ = [nn.Linear(layers_dim[-1], io_dims[1]*2)]
         
         self.net = nn.ModuleList(np.concatenate((net_g, net_g_)))
 
@@ -42,18 +43,19 @@ class Net_g(nn.Module):
         return x 
     
 class CNP_Net(nn.Module):
-    def __init__(self, io_dims=[1,1], n_layers=[3, 5], \
-                 layers_dim={'h':[8, 32, 128], 'g':[128+1, 64, 32, 16, 8]}):
+    def __init__(self, io_dims=[1,1], \
+                 layers_dim={'h':[8, 32, 128], 'g':[128, 64, 32, 16, 8]}):
         super(CNP_Net, self).__init__()
+        self.io_dims = io_dims
 
         self.net_h = Net_h(np.sum(io_dims), layers_dim['h'])
-        self.net_g = Net_g(layers_dim['g'], io_dims[1]*2)
+        self.net_g = Net_g(layers_dim['g'], io_dims)
         self.operator = torch.mean
         self.softplus = nn.Softplus()
 
     def forward(self, O, T):
         self.r = self.operator(self.net_h(O), dim=0).expand(T.shape[0], -1)
-        self.xr = torch.cat((self.r, T[:,0].unsqueeze_(dim=-1)), dim=1)
+        self.xr = torch.cat((self.r, T[:,:self.io_dims[0]]), dim=1)
         self.phi = self.net_g(self.xr)
 
         self.mu = self.phi[:,:1]
