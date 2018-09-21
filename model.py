@@ -58,12 +58,12 @@ class CNP_Net(nn.Module):
         self.xr = torch.cat((self.r, T[:,:self.io_dims[0]]), dim=1)
         self.phi = self.net_g(self.xr)
 
-        self.mu = self.phi[:,:1]
-        self.sig = self.softplus(self.phi[:,1:])
+        self.mu = self.phi[:,:self.io_dims[1]]
+        self.sig = self.softplus(self.phi[:,self.io_dims[1]:])
     
         normals = [MultivariateNormal(mu, torch.diag(cov)) for mu, cov in 
                 zip(self.mu, self.sig**2)]
-        log_probs = [normals[i].log_prob(x) for i, x in enumerate(T)]
+        log_probs = [normals[i].log_prob(y) for i, (x, y) in enumerate(T)]
 
         log_prob = 0
         for p in log_probs:
