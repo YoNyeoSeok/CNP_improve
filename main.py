@@ -189,52 +189,54 @@ def main():
         loss.backward()
         optimizer.step()
     
-    if args.log:
-        with open("logs/%s/log.txt"%args.log_folder, "a") as log_file:
-            log_file.write("%5d\t%10.4f\n"%(t, loss.item()))
-
-#    t = args.max_epoch
-    print('%5d'%t, '%10.4f'%loss.item())
-    if args.fig_show:
-        test_set = torch.cat((torch.tensor(space_samples),
-                torch.tensor(np.zeros(len(space_samples)).reshape(-1, 1))),
-            dim=1).float()
-        phi, _ = model(training_set, test_set)
-    
-        plt.clf()
-        ax = data_generator.make_fig_ax(fig)
-        data_generator.scatter_data(ax, np.concatenate((x_train, y_train), axis=1), c='r')
-        data_generator.scatter_data(ax, np.concatenate((x_test, y_test), axis=1), c='y')
-        data_generator.plot_data(ax, np.concatenate((space_samples, predict_y_mu, predict_y_cov), axis=1))
-        fig.canvas.draw()
-        fig.show()
-#    plt.clf()
-#    plt.xlim(x_min, x_max)
-#    plt.ylim(-3, 3)
-
-    # train, test points
-#    plt.scatter(x_train, y_train, c='r')
-#    plt.scatter(x, y, c='y')
-
-    # plot gp prediction (base line)
-#    plot_fig(fig, x_plot, y_mu, y_cov)
-
-    # plot model prediction
-#    test_set = torch.cat((torch.tensor(x_plot),
-#            torch.tensor(np.zeros(n_observation).reshape(-1, 1))),
-#        dim=1).float()
-#    phi, _ = model(training_set, test_set)
-#    predict_y_mu = phi[:,0].data.numpy()
-#    predict_y_cov = np.diag(phi[:,1].data.numpy())**2
+#    if args.log:
+#        with open("logs/%s/log.txt"%args.log_folder, "a") as log_file:
+#            log_file.write("%5d\t%10.4f\n"%(t, loss.item()))
 #
-#    plot_fig(fig, x_plot, predict_y_mu, predict_y_cov, color='b')
-
-#    fig.canvas.draw()
-
-    if args.log:
-        torch.save(model, "logs/%s/%05d.pt"%(args.log_folder, t))
-        if args.fig_show:
-            plt.savefig('logs/%s/%05d.png'%(args.log_folder, t))
+##    t = args.max_epoch
+#    print('%5d'%t, '%10.4f'%loss.item())
+#    if args.fig_show:
+#        test_set = torch.cat((torch.tensor(space_samples),
+#                torch.tensor(np.zeros(len(space_samples)).reshape(-1, 1))),
+#            dim=1).float()
+#        phi, _ = model(training_set, test_set)
+#        predict_y_mu = phi[:,:data_generator.io_dims[1]].data.numpy()
+#        predict_y_cov = phi[:,data_generator.io_dims[1]:].data.numpy()**2
+#    
+#        plt.clf()
+#        ax = data_generator.make_fig_ax(fig)
+#        data_generator.scatter_data(ax, np.concatenate((x_train, y_train), axis=1), c='r')
+#        data_generator.scatter_data(ax, np.concatenate((x_test, y_test), axis=1), c='y')
+#        data_generator.plot_data(ax, np.concatenate((space_samples, predict_y_mu, predict_y_cov), axis=1))
+#        fig.canvas.draw()
+#        fig.show()
+##    plt.clf()
+##    plt.xlim(x_min, x_max)
+##    plt.ylim(-3, 3)
+#
+#    # train, test points
+##    plt.scatter(x_train, y_train, c='r')
+##    plt.scatter(x, y, c='y')
+#
+#    # plot gp prediction (base line)
+##    plot_fig(fig, x_plot, y_mu, y_cov)
+#
+#    # plot model prediction
+##    test_set = torch.cat((torch.tensor(x_plot),
+##            torch.tensor(np.zeros(n_observation).reshape(-1, 1))),
+##        dim=1).float()
+##    phi, _ = model(training_set, test_set)
+##    predict_y_mu = phi[:,0].data.numpy()
+##    predict_y_cov = np.diag(phi[:,1].data.numpy())**2
+##
+##    plot_fig(fig, x_plot, predict_y_mu, predict_y_cov, color='b')
+#
+##    fig.canvas.draw()
+#
+#    if args.log:
+#        torch.save(model, "logs/%s/%05d.pt"%(args.log_folder, t))
+#        if args.fig_show:
+#            plt.savefig('logs/%s/%05d.png'%(args.log_folder, t))
 
 if __name__ == '__main__':
     main()
