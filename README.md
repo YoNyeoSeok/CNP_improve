@@ -1,4 +1,4 @@
-# CNP_reimplement
+# CNP_improve
 Dependencies:
 matplotlib
 sklearn
@@ -7,4 +7,3 @@ scipy
 
 models are in logs folder, with "number".pt
 test:
-python test.py --load_model logs/1e-5/(model)
