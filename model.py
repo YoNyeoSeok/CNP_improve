@@ -58,15 +58,15 @@ class CNP_Net(nn.Module):
         self.xr = torch.cat((self.r, T[:,:self.io_dims[0]]), dim=1)
         self.phi = self.net_g(self.xr)
 
+#        if self.io_dims[1] != 1: 
+#            print("multivariate regression is not supported")
+#            return
         self.mu = self.phi[:,:self.io_dims[1]]
-        if self.io_dims[1] != 1: 
-            print("covariance of multi demension is not supported")
-            return
         self.sig = self.softplus(self.phi[:,self.io_dims[1]:])
     
         normals = [MultivariateNormal(mu, torch.diag(cov)) for mu, cov in 
                 zip(self.mu, self.sig**2)]
-        log_probs = [normals[i].log_prob(t[:self.io_dims[1]]) for i, t in enumerate(T)]
+        log_probs = [normals[i].log_prob(t[self.io_dims[0]:]) for i, t in enumerate(T)]
 
         log_prob = 0
         for p in log_probs:
