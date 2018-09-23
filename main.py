@@ -91,8 +91,8 @@ def main():
 
     if args.gpu:
         model.to(device)
-        print('max gpu memory', torch.cuda.max_memory_allocated(device))
-        print('current gpu memory usage', torch.cuda.memory_allocated(device))
+        print('max gpu memory', torch.cuda.max_memory_allocated(torch.cuda.current_device()))
+        print('current gpu memory usage', torch.cuda.memory_allocated(device.torch.cuda.current_device()))
 #    for m, p in model.named_parameters():
 #        print(m, p)
 #    print(model)
@@ -146,7 +146,7 @@ def main():
             if args.gpu:
                 training_set = training_set.to(device)
                 test_set = test_set.to(device)
-                print('current gpu memory usage', torch.cuda.memory_allocated(device))
+                print('current gpu memory usage', torch.cuda.memory_allocated(device.torch.cuda.current_device()))
             # print('train, test', training_set.shape, test_set.shape)
             phi, log_prob = model(training_set, test_set)
             # print('phi', phi.shape)
