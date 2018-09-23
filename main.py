@@ -44,6 +44,8 @@ parser.add_argument("--datasource", type=str, nargs='?', default="gp1d", choices
         help="gp1d or branin")
 parser.add_argument("--fig_show", action='store_true',
         help="figure show during traing")
+parser.add_argument("--gpu", action='store_false',
+        help="use gpu")
 parser.add_argument("--load_model", type=str,
         help="load model. format: folder/iteration")
 parser.add_argument("--model_layers", nargs='?', default=None,
@@ -51,6 +53,9 @@ parser.add_argument("--model_layers", nargs='?', default=None,
 parser.add_argument("--precision", nargs='?', default=None,
         help="change variance to precision (inverse) option")
 args = parser.parse_args()
+
+if args.gpu:
+    device = torch.device("cuda:0")
 
 def plot_fig(fig, x, y_min, y_cov, color='k'):
     plt.plot(x, y_min)
@@ -83,6 +88,12 @@ def main():
                                     'g':[128, 64, 32, 16, 8]})#.float()
     else:
         model = CNP_Net(io_dims=data_generator.io_dims)#.float()
+
+    if args.gpu:
+        model.to(device)
+#    for m, p in model.named_parameters():
+#        print(m, p)
+#    print(model)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
 
@@ -126,10 +137,14 @@ def main():
             training_set = torch.cat((torch.tensor(x_train),
                         torch.tensor(y_train)),
                     dim=1).float()
-            test_set = torch.cat((torch.tensor(x_test).float(),
-                        torch.tensor(y_test).float()),
+            test_set = torch.cat((torch.tensor(x_test),
+                        torch.tensor(y_test)),
                     dim=1).float()
         
+            if args.gpu:
+                training_set.to(device)
+                test_set.to(device)
+                print(training_set)
             # print('train, test', training_set.shape, test_set.shape)
             phi, log_prob = model(training_set, test_set)
             # print('phi', phi.shape)
