@@ -142,9 +142,8 @@ def main():
                     dim=1).float()
         
             if args.gpu:
-                training_set.to(device)
-                test_set.to(device)
-                print(training_set)
+                training_set = training_set.to(device)
+                test_set = test_set.to(device)
             # print('train, test', training_set.shape, test_set.shape)
             phi, log_prob = model(training_set, test_set)
             # print('phi', phi.shape)
@@ -185,8 +184,12 @@ def main():
                 test_set = torch.cat((torch.tensor(space_samples),
                         torch.tensor(np.zeros(len(space_samples)).reshape(-1, 1))),
                     dim=1).float()
+                if args.gpu:
+                    test_set = test_set.to(device)
                 # print('train, test', training_set.shape, test_set.shape)
                 phi, _ = model(training_set, test_set)
+                if args.gpu:
+                    phi = phi.cpu()
                 # print('phi', phi.shape)
                 predict_y_mu = phi[:,:data_generator.io_dims[1]].data.numpy()
                 predict_y_cov = phi[:,data_generator.io_dims[1]:].data.numpy()**2
