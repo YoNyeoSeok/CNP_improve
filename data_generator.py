@@ -8,7 +8,7 @@ from sklearn.gaussian_process.kernels import RBF, WhiteKernel
 class DataGenerator():
     def __init__(self, datasource, batch_size, \
             random_sample, disjoint_data, num_samples, num_samples_range, \
-            input_range, task_limit):
+            input_range, output_range, task_limit):
         self.datasource = datasource
         self.batch_size = batch_size
         self.random_sample = random_sample
@@ -16,6 +16,7 @@ class DataGenerator():
         self.num_samples = num_samples
         self.num_samples_range = num_samples_range
         self.input_range = input_range
+        self.output_range = output_range
         self.task_limit = task_limit
  
         if self.disjoint_data:
@@ -116,10 +117,10 @@ class DataGenerator():
             y = self.ys[i]
         else:
             if self.datasource == 'gp1d':
-                x = (self.input_range[1]-self.input_range[0]) * (np.random.rand(num_samples, self.io_dims[0]) - .5)
+                x = (self.input_range[1]-self.input_range[0]) * np.random.rand(num_samples, self.io_dims[0]) + self.input_range[0]
                 y = self.gp.sample_y(x).reshape(-1, 1)
             elif self.datasource == 'branin':
-                x = (self.input_range[1]-self.input_range[0]) * (np.random.rand(num_samples, self.io_dims[0]) - .5)
+                x = (self.input_range[1]-self.input_range[0]) * np.random.rand(num_samples, self.io_dims[0]) + self.input_range[0]
                 y = self.f(x[:,None,0], x[:,None,1])
 
         return x, y
@@ -156,12 +157,12 @@ class DataGenerator():
         if sum(self.io_dims) == 2:
             ax = fig.add_subplot(111)
             ax.set_xlim(self.input_range[0], self.input_range[1])
-            ax.set_ylim(-3, 3)
+            ax.set_ylim(self.output_range[0], self.output_range[1])
         elif sum(self.io_dims) == 3:
             ax = fig.add_subplot(111, projection='3d')
             ax.set_xlim(self.input_range[0], self.input_range[1])
             ax.set_ylim(self.input_range[0], self.input_range[1])
-            ax.set_zlim(-3, 3)
+            #ax.set_zlim(self.output_range[0], self.output_range[1])
         return ax
             
 
