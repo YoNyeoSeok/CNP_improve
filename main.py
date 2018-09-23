@@ -34,6 +34,8 @@ parser.add_argument("-nnd", "--not_disjoint_data", action='store_false',
         help='train test set data are not disjoint setting flag')
 parser.add_argument("--input_range", metavar=('min', 'max'), type=int, nargs=2, default=[-2, 2],
         help='function input range (default: [-2, 2])')
+parser.add_argument("--output_range", metavar=('min', 'max'), type=int, nargs=2, default=[-2, 2],
+        help='function output range (default: [-2, 2])')
 parser.add_argument("--log", action='store_true',
         help="save loss, fig and model log")
 parser.add_argument("--log_folder", type=str, default="log",
@@ -65,6 +67,7 @@ def main():
                                    num_samples=args.num_samples,
                                    num_samples_range=args.num_samples_range,
                                    input_range=args.input_range,
+                                   output_range=args.output_range,
                                    task_limit=args.task_limit)
     
     space_samples = data_generator.generate_space_sample()
