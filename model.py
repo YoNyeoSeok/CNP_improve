@@ -18,11 +18,15 @@ class Net_h(nn.Module):
 
     def forward(self, x):
         for i, l in enumerate(self.net):
+            print(x)
+            for m, p in l.named_parameters():
+                print(m, p)
             x = l(x)
             if i+1 < len(self.net):
                 x = F.relu(x)
 #                x = F.sigmoid(x)
         return x
+    
         
 class Net_g(nn.Module):
     def __init__(self, layers_dim, io_dims):
@@ -42,6 +46,7 @@ class Net_g(nn.Module):
 #                x = F.sigmoid(x)
         return x 
     
+    
 class CNP_Net(nn.Module):
     def __init__(self, io_dims=[1,1], \
                  layers_dim={'h':[8, 32, 128], 'g':[128, 64, 32, 16, 8]}):
@@ -54,6 +59,7 @@ class CNP_Net(nn.Module):
         self.softplus = nn.Softplus()
 
     def forward(self, O, T):
+        print(O, T)
         self.r = self.operator(self.net_h(O), dim=0).expand(T.shape[0], -1)
         self.xr = torch.cat((self.r, T[:,:self.io_dims[0]]), dim=1)
         self.phi = self.net_g(self.xr)
@@ -73,3 +79,4 @@ class CNP_Net(nn.Module):
             log_prob += p
         
         return self.phi, log_prob/len(log_probs)
+
