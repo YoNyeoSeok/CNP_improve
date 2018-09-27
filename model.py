@@ -56,6 +56,8 @@ class CNP_Net(nn.Module):
         self.softplus = nn.Softplus()
 
     def forward(self, O, T):
+        import time
+        t = time.time()
         self.r = self.operator(self.net_h(O), dim=0).expand(T.shape[0], -1)
         self.xr = torch.cat((self.r, T[:,:self.io_dims[0]]), dim=1)
         self.phi = self.net_g(self.xr)
@@ -63,12 +65,35 @@ class CNP_Net(nn.Module):
 #        if self.io_dims[1] != 1: 
 #            print("multivariate regression is not supported")
 #            return
+        t = time.time()
         self.mu = self.phi[:,:self.io_dims[1]]
         self.sig = self.softplus(self.phi[:,self.io_dims[1]:])
+        
+        t = time.time()
+        log_probs = []
+        def func(m, s, t):
+            normal = MultivariateNormal(m, torch.diag(s**2))
+            return normal.log_prob(t)
+#        print(self.mu)
+#        print(self.sig)
+#        print(T)
+#        print(T[:, self.io_dims[0]:])
+        log_probs = list(map(func, self.mu, self.sig, T[:, self.io_dims[0]:]))
+#        for m, s, t in zip(self.mu, self.sig, T):
+#            #            normal = MultivariateNormal(m, torch.diag(s**2))
+##            log_probs.append(normal.log_prob(t[self.io_dims[0]:]))
+#            print(m)
+#            log_probs.append(t.log_normal_(m[0].cpu().numpy().tolist(), s[0].cpu().numpy().tolist()**2))
+#            log_probs.append(normal.log_prob(t[self.io_dims[0]:]))
+
     
-        normals = [MultivariateNormal(mu, torch.diag(cov)) for mu, cov in 
-                zip(self.mu, self.sig**2)]
-        log_probs = [normals[i].log_prob(t[self.io_dims[0]:]) for i, t in enumerate(T)]
+#        t = time.time()
+#        normals = [MultivariateNormal(mu, torch.diag(cov)) for mu, cov in 
+#                zip(self.mu, self.sig**2)]
+#        print('normals', time.time() - t)
+#        t = time.time()
+#        log_probs = [normals[i].log_prob(t[self.io_dims[0]:]) for i, t in enumerate(T)]
+#        print('log_probs', time.time() - t)
 
         log_prob = 0
         for p in log_probs:
