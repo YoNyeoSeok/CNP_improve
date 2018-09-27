@@ -48,7 +48,7 @@ parser.add_argument("--datasource", type=str, nargs='?', default="gp1d", choices
         help="gp1d or branin")
 parser.add_argument("--fig_show", action='store_true',
         help="figure show during traing")
-parser.add_argument("--gpu", action='store_false',
+parser.add_argument("--gpu", action='store_true',
         help="use gpu")
 parser.add_argument("--load_model", type=str,
         help="load model. format: folder/iteration")
