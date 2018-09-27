@@ -125,13 +125,19 @@ class DataGenerator():
 
         return x, y
     
-    def generate_space_sample(self, num_samples=None):
+    def generate_space_sample(self, num_samples=None, step_size=None):
         if num_samples is None:
             num_samples = self.gen_num_samples
+        if step_size is None:
+            step_size = 1
         if self.io_dims[0] == 1:
-            return np.linspace(self.input_range[0], self.input_range[1], num_samples).reshape(-1, 1)
+            #return np.linspace(self.input_range[0], self.input_range[1], num_samples).reshape(-1, 1)
+            r = self.input_range[1] - self.input_range[0]
+            return np.linspace(self.input_range[0], self.input_range[1], int(r/step_size + 1)).reshape(-1, 1)
         elif self.io_dims[0] == 2:
-            l = np.linspace(self.input_range[0], self.input_range[1], int(np.sqrt(num_samples)))
+            r = self.input_range[1] - self.input_range[0]
+            l = np.linspace(self.input_range[0], self.input_range[1], int(r/step_size + 1)).reshape(-1, 1)
+            #l = np.linspace(self.input_range[0], self.input_range[1], int(np.sqrt(num_samples)))
             x1, x2 = np.meshgrid(l, l)
             return np.concatenate((x1.reshape(-1, 1), x2.reshape(-1, 1)), axis=1)
             return np.array(zip(*(x.flat for x in np.meshgrid(l, l))))

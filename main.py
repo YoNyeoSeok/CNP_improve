@@ -92,7 +92,7 @@ def main():
     if args.gpu:
         model.to(device)
         print('max gpu memory', torch.cuda.max_memory_allocated(torch.cuda.current_device()))
-        print('current gpu memory usage', torch.cuda.memory_allocated(device.torch.cuda.current_device()))
+        print('current gpu memory usage', torch.cuda.memory_allocated(torch.cuda.current_device()))
 #    for m, p in model.named_parameters():
 #        print(m, p)
 #    print(model)
@@ -146,10 +146,13 @@ def main():
             if args.gpu:
                 training_set = training_set.to(device)
                 test_set = test_set.to(device)
-                print('current gpu memory usage', torch.cuda.memory_allocated(device.torch.cuda.current_device()))
+                print('before forward current gpu memory usage', torch.cuda.memory_allocated(torch.cuda.current_device()))
+            print(training_set.shape, test_set.shape)
             # print('train, test', training_set.shape, test_set.shape)
             phi, log_prob = model(training_set, test_set)
             # print('phi', phi.shape)
+            if args.gpu:
+                print('after forward current gpu memory usage', torch.cuda.memory_allocated(torch.cuda.current_device()))
     
             loss += -torch.sum(log_prob)
         loss = loss / args.batch_size
@@ -158,7 +161,7 @@ def main():
             with open("logs/%s/log.txt"%args.log_folder, "a") as log_file:
                 log_file.write("%5d\t%10.4f\n"%(t, loss.item()))
         
-        if t % args.interval == 0:
+        if (t+1) % args.interval == 0:
             print('%5d'%t, '%10.4f'%loss.item())
             if args.fig_show:
                 plt.clf()
@@ -208,10 +211,11 @@ def main():
             if args.log:
                 plt.savefig('logs/%s/%05d.png'%(args.log_folder, t))
                 torch.save(model, "logs/%s/%05d.pt"%(args.log_folder, t))
-             
+        print('before backward') 
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+        print('before backward') 
     
 #    if args.log:
 #        with open("logs/%s/log.txt"%args.log_folder, "a") as log_file:
