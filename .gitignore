@@ -9,3 +9,11 @@ pytorch_ver/*.backup
 pytorch_ver/*.un~
 
 ### tensorflow ###
+tensorflow_ver/*.swp
+tensorflow_ver/__pycache__
+tensorflow_ver/logs/*
+tensorflow_ver/tests/*
+tensorflow_ver/*.pyc
+tensorflow_ver/*.backup
+tensorflow_ver/*.un~
+
