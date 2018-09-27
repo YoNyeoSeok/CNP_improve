@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from  torch.distributions.normal import Normal
+from  torch.distributions.multivariate_normal import *
 from  torch.distributions.multivariate_normal import MultivariateNormal
 import numpy as np
 import scipy
@@ -70,6 +71,9 @@ class CNP_Net(nn.Module):
         self.sig = self.softplus(self.phi[:,self.io_dims[1]:])
         
         t = time.time()
+        log_probs = -0.5*torch.log(2*np.pi*self.sig**2) - 0.5*(self.mu-T[:,self.io_dims[0]:])**2/self.sig**2
+
+        """
         log_probs = []
         def func(m, s, t):
             normal = MultivariateNormal(m, torch.diag(s**2))
@@ -78,7 +82,22 @@ class CNP_Net(nn.Module):
 #        print(self.sig)
 #        print(T)
 #        print(T[:, self.io_dims[0]:])
-        log_probs = list(map(func, self.mu, self.sig, T[:, self.io_dims[0]:]))
+        diffs = T[:, self.io_dims[0]:] - self.mu
+
+        n = self.sig[0].size(-1)
+        cholesky = torch.stack([C.potrf(upper=False) for C in bmat.reshape((-1, n, n))])
+        scale_tril = cholesky.view(bmat.shape)
+        scale_tril = _batch_portf_lower(covariance_matrix)
+
+        flat_L = L.unsqueeze(0).reshape((-1,) + L.shape[-2:])
+        L_inv = torch.stack([torch.inverse(Li.t()) for Li in flat_L]).view(L.shape)
+        M = (x.unsqueeze(-1) * L_inv).sum(-2).pow(2.0).sum(-1)
+        M = _batch_mahanobis(self.scale_tril, diff)
+
+        log_det = _batch_diag(self.scale_tril).abs().log().sum(-1)
+        log_probs =  -0.5 * (M + self.loc.size(-1) * math.log(2 * math.pi)) - log_det
+            
+#        log_probs = list(map(func, self.mu, self.sig, T[:, self.io_dims[0]:]))
 #        for m, s, t in zip(self.mu, self.sig, T):
 #            #            normal = MultivariateNormal(m, torch.diag(s**2))
 ##            log_probs.append(normal.log_prob(t[self.io_dims[0]:]))
@@ -95,6 +114,7 @@ class CNP_Net(nn.Module):
 #        log_probs = [normals[i].log_prob(t[self.io_dims[0]:]) for i, t in enumerate(T)]
 #        print('log_probs', time.time() - t)
 
+        """
         log_prob = 0
         for p in log_probs:
             log_prob += p

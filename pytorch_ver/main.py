@@ -57,13 +57,6 @@ args = parser.parse_args()
 if args.gpu:
     device = torch.device("cuda:0")
 
-def plot_fig(fig, x, y_min, y_cov, color='k'):
-    plt.plot(x, y_min)
-    plt.fill_between(x.reshape(-1), 
-            y_min.reshape(-1) - np.sqrt(np.diag(y_cov)), 
-            y_min.reshape(-1) + np.sqrt(np.diag(y_cov)),
-            alpha=.5, color=color)
-
 def main():
     data_generator = DataGenerator(datasource=args.datasource, 
                                    batch_size=args.batch_size,
@@ -76,9 +69,6 @@ def main():
                                    task_limit=args.task_limit)
     
     space_samples = data_generator.generate_space_sample()
-#    x_plot = np.linspace(args.input_range[0], args.input_range[1], args.num_samples[-1]).reshape(-1, 1)
-
-    # x_plot = np.linspace(x_min, x_max, n_observation).reshape(-1, 1)
 
     if args.load_model is not None:
         model = torch.load(args.load_model)
@@ -121,20 +111,6 @@ def main():
             # print(x_train, y_train, x_test, y_test)
             # print('shapes', x_train.shape, y_train.shape, x_test.shape, y_test.shape)
             # print(x_test.shape, y_test.shape, x_train.shape, y_train.shape)
-            
-#            if self.num_samples == 0:
-#                N = np.random.randint(self.num_samples_min, self.num_samples_max)
-#            else:
-#                N = self.num_samples
-#            if args.datasource == 'gp1d':
-#                gp = data_generator.gp
-#                gp.fit(x_train, y_train)
-#                #y_mu, y_cov = gp.predict(x_plot, return_cov=True)
-#                y_mu, y_cov = gp.predict(space_samples, return_cov=True)
-#            elif args.datasource == 'branin':
-#                pass
-
-            # print('train', x_train.shape, y_train.shape)
     
             training_set = torch.cat((torch.tensor(x_train),
                         torch.tensor(y_train)),
