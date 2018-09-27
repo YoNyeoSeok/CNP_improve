@@ -34,8 +34,12 @@ parser.add_argument("-nnd", "--not_disjoint_data", action='store_false',
         help='train test set data are not disjoint setting flag')
 parser.add_argument("--input_range", metavar=('min', 'max'), type=int, nargs=2, default=[-2, 2],
         help='function input range (default: [-2, 2])')
-parser.add_argument("--output_range", metavar=('min', 'max'), type=int, nargs=2, default=[-2, 2],
-        help='function output range (default: [-2, 2])')
+parser.add_argument("--window_range", metavar=('min', 'max'), type=int, nargs=2, default=None,
+        help='plot window range (default: input_range)')
+parser.add_argument("--window_step_size", type=float, nargs='?', default=1.0,
+        help='plot window step size (default: 1.0)')
+parser.add_argument("--random_window_position", action='store_true',
+        help='plot window position by random in input range (default: false)')
 parser.add_argument("--log", action='store_true',
         help="save loss, fig and model log")
 parser.add_argument("--log_folder", type=str, default="log",
@@ -65,10 +69,13 @@ def main():
                                    num_samples=args.num_samples,
                                    num_samples_range=args.num_samples_range,
                                    input_range=args.input_range,
-                                   output_range=args.output_range,
+                                   window_range=args.window_range,
+                                   window_step_size=args.window_step_size,
+                                   random_window_position=args.random_window_position,
                                    task_limit=args.task_limit)
     
-    space_samples = data_generator.generate_space_sample()
+    if not args.random_window_position:
+        space_samples = data_generator.generate_window_samples(args.window_range, args.window_step_size)
 
     if args.load_model is not None:
         model = torch.load(args.load_model)
@@ -79,10 +86,10 @@ def main():
     else:
         model = CNP_Net(io_dims=data_generator.io_dims)#.float()
 
+    model.double()
+
     if args.gpu:
         model.to(device)
-        print('max gpu memory', torch.cuda.max_memory_allocated(torch.cuda.current_device()))
-        print('current gpu memory usage', torch.cuda.memory_allocated(torch.cuda.current_device()))
 #    for m, p in model.named_parameters():
 #        print(m, p)
 #    print(model)
@@ -114,21 +121,22 @@ def main():
     
             training_set = torch.cat((torch.tensor(x_train),
                         torch.tensor(y_train)),
-                    dim=1).float()
+                    dim=1)
             test_set = torch.cat((torch.tensor(x_test),
                         torch.tensor(y_test)),
-                    dim=1).float()
+                    dim=1)
+            #training_set.float()
+            #test_set.float()
+            training_set.double()
+            test_set.double()
         
             if args.gpu:
                 training_set = training_set.to(device)
                 test_set = test_set.to(device)
-                print('before forward current gpu memory usage', torch.cuda.memory_allocated(torch.cuda.current_device()))
-            print(training_set.shape, test_set.shape)
+            #print(training_set.shape, test_set.shape)
             # print('train, test', training_set.shape, test_set.shape)
             phi, log_prob = model(training_set, test_set)
             # print('phi', phi.shape)
-            if args.gpu:
-                print('after forward current gpu memory usage', torch.cuda.memory_allocated(torch.cuda.current_device()))
     
             loss += -torch.sum(log_prob)
         loss = loss / args.batch_size
@@ -137,7 +145,7 @@ def main():
             with open("logs/%s/log.txt"%args.log_folder, "a") as log_file:
                 log_file.write("%5d\t%10.4f\n"%(t, loss.item()))
         
-        if (t+1) % args.interval == 0:
+        if t % args.interval == 0:
             print('%5d'%t, '%10.4f'%loss.item())
             if args.fig_show:
                 plt.clf()
@@ -146,9 +154,7 @@ def main():
             # train, test points
             # print(x_test.shape, y_test.shape)
             # data_generator.plot_data(fig, np.concatenate((x_test, y_test), axis=1))
-            if args.fig_show:
-                data_generator.scatter_data(ax, np.concatenate((x_test, y_test), axis=1), c='y')
-                data_generator.scatter_data(ax, np.concatenate((x_train, y_train), axis=1), c='r')
+            # if args.fig_show:
 
     #                if x_test.shape[1] == 1:
     #                    plt.scatter(x_test, y_test, c='y')
@@ -162,14 +168,23 @@ def main():
     #            test_set = torch.cat((torch.tensor(x_plot),
     #                    torch.tensor(np.zeros(len(x_plot)).reshape(-1, 1))),
     #                dim=1).float()
-                # print(space_samples)
+                if args.random_window_position:
+                    window_range = args.window_range - np.mean(args.window_range)
+                    window_range += np.random.randint(args.input_range[0]-window_range[0], args.input_range[1]-window_range[1])
+                    space_samples = data_generator.generate_window_samples(window_range, args.window_step_size)
+
                 test_set = torch.cat((torch.tensor(space_samples),
                         torch.tensor(np.zeros(len(space_samples)).reshape(-1, 1))),
-                    dim=1).float()
+                    dim=1)
+                #test_set.float()
+                test_set.double()
                 if args.gpu:
                     test_set = test_set.to(device)
+                    print('before forward current gpu memory usage', torch.cuda.memory_allocated(torch.cuda.current_device()))
                 # print('train, test', training_set.shape, test_set.shape)
                 phi, _ = model(training_set, test_set)
+                if args.gpu:
+                    print('after forward current gpu memory usage', torch.cuda.memory_allocated(torch.cuda.current_device()))
                 if args.gpu:
                     phi = phi.cpu()
                 # print('phi', phi.shape)
@@ -181,17 +196,22 @@ def main():
     
                 # plot_fig(fig, x_plot, predict_y_mu, predict_y_cov, color='b')
                 # print(space_samples.shape, predict_y_mu.shape, predict_y_cov.shape)
-                data_generator.plot_data(ax, np.concatenate((space_samples, predict_y_mu, predict_y_cov), axis=1))
+                #test_data = np.concatenate((x_test, y_test), axis=1)
+                train_data = np.concatenate((x_train, y_train), axis=1)
+                window_data = np.concatenate((space_samples, predict_y_mu, predict_y_cov), axis=1)
+                data_generator.scatter_data(ax, train_data, c='r')
+                data_generator.plot_data(ax, window_data) 
+                #data_generator.scatter_data(ax, test_data, c='y')
+                #data_generator.contour_data(ax, window_data) 
+                #data_generator.plot_gp(ax, train_data, window_data)
                 fig.canvas.draw()
 
             if args.log:
                 plt.savefig('logs/%s/%05d.png'%(args.log_folder, t))
                 torch.save(model, "logs/%s/%05d.pt"%(args.log_folder, t))
-        print('before backward') 
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-        print('before backward') 
     
 #    if args.log:
 #        with open("logs/%s/log.txt"%args.log_folder, "a") as log_file:
