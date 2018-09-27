@@ -248,5 +248,3 @@ class DataGenerator():
             ax.scatter(data[:,0], data[:,1], data[:,2], c=c) 
         pass
 
-
-    

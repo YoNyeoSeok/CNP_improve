@@ -2,7 +2,7 @@
 
 pytorch_ver/*.swp
 pytorch_ver/__pycache__
-pytorch_ver/logs
+pytorch_ver/logs/*
 pytorch_ver/tests/*
 pytorch_ver/*.pyc
 pytorch_ver/*.backup
