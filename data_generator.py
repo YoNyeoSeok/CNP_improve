@@ -81,15 +81,46 @@ class DataGenerator():
     def get_train_test_batch(self, batch_size=None):
         if batch_size is None:
             batch_size = self.batch_size
-        trains = [np.zeros(batch_size, self.gen_num_samples, self.io_dims[0]), \
-                np.zeros(batch_size, self.gen_num_samples, self.io_dims[1])]
-        tests = [np.zeros(batch_size, self.gen_num_samples, self.io_dims[0]), \
-                np.zeros(batch_size, self.gen_num_samples, self.io_dims[1])]
-        for i in range(batch_size):
-            trains[i], tests[i] = self.get_train_test_sample()
-        return trains, tests
+#        trains = [np.zeros(batch_size, self.gen_num_samples, self.io_dims[0]), \
+        #                np.zeros(batch_size, self.gen_num_samples, self.io_dims[1])]
+#        tests = [np.zeros(batch_size, self.gen_num_samples, self.io_dims[0]), \
+        #                np.zeros(batch_size, self.gen_num_samples, self.io_dims[1])]
+
+        xs, ys = self.generate_batch(batch_size)
+
+        if self.disjoint_data:
+            if self.random_sample:
+                Ns_train = np.random.randint(self.num_samples_range[0], self.num_samples_range[1], batch_size)
+                Ns_test = np.random.randint(self.num_samples_range[0], self.num_samples_range[1], batch_size)+self.num_samples_range[1]
+                x_train_batch, x_test_batch = zip(*map(lambda x, N_train, N_test: 
+                        (x[:, :N_train], x[:, self.num_sampels_range[1]:N_test]), xs, Ns_train, Ns_test))
+                y_train_batch, y_test_batch = zip(*map(lambda y, N_train, N_test: 
+                        (y[:, :N_train], y[:, self.num_sampels_range[1]:N_test]), ys, Ns_train, Ns_test))
+            else:
+                x_train_batch, x_test_batch = zip(*map(lambda x: 
+                        (x[:, :self.num_samples[0]], x[:, self.sampels_range[1]:]), xs))
+                y_train_batch, y_test_batch = zip(*map(lambda y: 
+                        (y[:, :self.num_samples[0]], y[:, self.sampels_range[1]:]), ys))
+        else:
+            if self.random_sample:
+                Ns = np.random.randint(self.num_samples_range[0], self.num_samples_range[1], batch_size)
+                x_train_batch, x_test_batch = zip(*map(lambda x, N: (x[:, :N], x), xs, Ns))
+                y_train_batch, y_test_batch = zip(*map(lambda y, N: 
+                        (y[:, :N], y), ys, Ns))
+            else:
+                x_train_batch, x_test_batch = zip(*map(lambda x: 
+                        (x[:, :self.num_samples[0]], x[:,:self.num_samples[1]]), xs))
+                y_train_batch, y_test_batch = zip(*map(lambda y: 
+                        (y[:, :self.num_samples[0]], y[:,:self.num_samples[1]]), ys))
+
+        return [x_train_batch, y_train_batch], [x_test_batch, y_test_batch]
 
     def get_train_test_sample(self, x_y=None):
+        train_batch, test_batch = self.get_train_test_batch(batch_size=1)
+        x_train_batch, y_train_batch = train_batch
+        x_test_batch, y_test_batch = test_batch
+        return [x_train_batch[0], y_train_batch[0]], [x_test_batch[0], y_test_batch[0]]
+
         if x_y is None:
             x, y = self.generate_sample()
         else:
@@ -127,7 +158,7 @@ class DataGenerator():
         if batch_size is None:
             batch_size = self.batch_size
         if num_samples is None:
-            num_samples = self.num_samples
+            num_samples = self.gen_num_samples
 
 #        xs = np.zeros((batch_size, num_samples, self.io_dims[0]))
 #        ys = np.zeros((batch_size, num_samples, self.io_dims[1]))
@@ -145,7 +176,7 @@ class DataGenerator():
                 x1s = (self.input_range[0][1]-self.input_range[0][0]) * np.random.rand(batch_size, num_samples, 1) + self.input_range[0][0]
                 x2s = (self.input_range[1][1]-self.input_range[1][0]) * np.random.rand(batch_size, num_samples, 1) + self.input_range[1][0]
                 ys = self.f(x1s, x2s) + np.random.randn(batch_size, num_samples, self.io_dims[1])
-                xs = np.concatenate((x1s, x2s), axis=1)
+                xs = np.concatenate((x1s, x2s), axis=2)
 
         return xs, ys
 
