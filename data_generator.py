@@ -112,7 +112,7 @@ class DataGenerator():
                 y_train_batch, y_test_batch = zip(*map(lambda y: 
                         (y[:self.num_samples[0]], y[:self.num_samples[1]]), ys))
 
-                #        print(len(x_train_batch[0]), len(y_train_batch[0]), len(x_test_batch[0]), len(y_test_batch[0]))
+                #print(len(x_train_batch[0]), len(y_train_batch[0]), len(x_test_batch[0]), len(y_test_batch[0]))
         return (x_train_batch, y_train_batch), (x_test_batch, y_test_batch)
 
     def get_train_test_sample(self, x_y=None):
