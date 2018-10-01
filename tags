@@ -4,224 +4,180 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-CNP_Net	pytorch_ver/model.py	/^class CNP_Net(nn.Module):$/;"	c
-CNP_Net	pytorch_ver/test_model.py	/^class CNP_Net(nn.Module):$/;"	c
-CNP_Net	tensorflow_ver/model.py	/^class CNP_Net():$/;"	c
-DataGenerator	pytorch_ver/data_generator.py	/^class DataGenerator():$/;"	c
-DataGenerator	tensorflow_ver/data_generator.py	/^class DataGenerator():$/;"	c
-ExactGPModel	pytorch_ver/tests/gp.py	/^class ExactGPModel(gpytorch.models.ExactGP):$/;"	c
-Figure	pytorch_ver/utils/figure.py	/^class Figure():$/;"	c
-MultivariateNormal	pytorch_ver/distributions/multivariate_normal_batch.py	/^class MultivariateNormal(Distribution):$/;"	c
-Net	pytorch_ver/tests/regression_test/model.py	/^class Net(nn.Module):$/;"	c
-Net	pytorch_ver/tests/regression_test/model_batch_norm.py	/^class Net(nn.Module):$/;"	c
-Net	pytorch_ver/tests/regression_test/model_weight_norm.py	/^class Net(nn.Module):$/;"	c
-Net_g	pytorch_ver/model.py	/^class Net_g(nn.Module):$/;"	c
-Net_g	pytorch_ver/test_model.py	/^class Net_g(nn.Module):$/;"	c
-Net_g	tensorflow_ver/model.py	/^class Net_g():$/;"	c
-Net_h	pytorch_ver/model.py	/^class Net_h(nn.Module):$/;"	c
-Net_h	pytorch_ver/test_model.py	/^class Net_h(nn.Module):$/;"	c
-Net_h	tensorflow_ver/model.py	/^class Net_h():$/;"	c
-Nets	pytorch_ver/tests/regression_test/model.py	/^class Nets(nn.Module):$/;"	c
-T	pytorch_ver/test.py	/^T = torch.tensor(np.concatenate(([x], [y]), axis=0))$/;"	v
-X	pytorch_ver/tests/gp_sklearn.py	/^X = np.linspace(x_min, x_max, 1)$/;"	v
-X_	pytorch_ver/tests/gp_sklearn.py	/^X_ = X[:, None]$/;"	v
-X_test	pytorch_ver/tests/gp_sklearn.py	/^X_test = np.linspace(x_min, x_max, 51)$/;"	v
-X_test_	pytorch_ver/tests/gp_sklearn.py	/^X_test_ = X_test[:, None]$/;"	v
-__init__	pytorch_ver/data_generator.py	/^            input_range, window_range, window_step_size, random_window_position,$/;"	m	class:DataGenerator
-__init__	pytorch_ver/distributions/multivariate_normal_batch.py	/^    def __init__(self, loc, covariance_matrix=None, precision_matrix=None, scale_tril=None, validate_args=None):$/;"	m	class:MultivariateNormal
-__init__	pytorch_ver/model.py	/^                 layers_dim={'h':[8, 32, 128], 'g':[128, 64, 32, 16, 8]}):$/;"	m	class:CNP_Net
-__init__	pytorch_ver/model.py	/^    def __init__(self, input_dim, layers_dim):$/;"	m	class:Net_h
-__init__	pytorch_ver/model.py	/^    def __init__(self, layers_dim, io_dims):$/;"	m	class:Net_g
-__init__	pytorch_ver/test_model.py	/^                 layers_dim={'h':[8, 32, 128], 'g':[128+1, 64, 32, 16, 8]}):$/;"	m	class:CNP_Net
-__init__	pytorch_ver/test_model.py	/^    def __init__(self, input_dim, layers_dim):$/;"	m	class:Net_h
-__init__	pytorch_ver/test_model.py	/^    def __init__(self, layers_dim, output_dim):$/;"	m	class:Net_g
-__init__	pytorch_ver/tests/gp.py	/^    def __init__(self, train_x, train_y, likelihood):$/;"	m	class:ExactGPModel
-__init__	pytorch_ver/tests/regression_test/model.py	/^    def __init__(self, n_feature, n_hidden, n_output):$/;"	m	class:Net
-__init__	pytorch_ver/tests/regression_test/model.py	/^    def __init__(self, n_feature, n_hiddens, n_output):$/;"	m	class:Nets
-__init__	pytorch_ver/tests/regression_test/model_batch_norm.py	/^    def __init__(self, n_feature, n_hidden, n_output):$/;"	m	class:Net
-__init__	pytorch_ver/tests/regression_test/model_weight_norm.py	/^    def __init__(self, n_feature, n_hidden, n_output):$/;"	m	class:Net
-__init__	pytorch_ver/utils/figure.py	/^    def __init__(self, show=False):$/;"	m	class:Figure
-__init__	tensorflow_ver/data_generator.py	/^            input_range, output_range, task_limit):$/;"	m	class:DataGenerator
-__init__	tensorflow_ver/model.py	/^            dim_hiddens={'h':[8, 32, 128], 'g':[128, 64, 32, 16, 8]}):$/;"	m	class:CNP_Net
-__init__	tensorflow_ver/model.py	/^    def __init__(self, dim_hiddens, dim_output):$/;"	m	class:Net_g
-__init__	tensorflow_ver/model.py	/^    def __init__(self, dim_input, dim_hiddens):$/;"	m	class:Net_h
-_batch_diag	pytorch_ver/distributions/multivariate_normal_batch.py	/^def _batch_diag(bmat):$/;"	f
-_batch_inverse	pytorch_ver/distributions/multivariate_normal_batch.py	/^def _batch_inverse(bmat):$/;"	f
-_batch_mahalanobis	pytorch_ver/distributions/multivariate_normal_batch.py	/^def _batch_mahalanobis(L, x):$/;"	f
-_batch_mv	pytorch_ver/distributions/multivariate_normal_batch.py	/^def _batch_mv(bmat, bvec):$/;"	f
-_batch_potrf_lower	pytorch_ver/distributions/multivariate_normal_batch.py	/^def _batch_potrf_lower(bmat):$/;"	f
-_get_batch_shape	pytorch_ver/distributions/multivariate_normal_batch.py	/^def _get_batch_shape(bmat, bvec):$/;"	f
-arg_constraints	pytorch_ver/distributions/multivariate_normal_batch.py	/^    arg_constraints = {'loc': constraints.real_vector,$/;"	v	class:MultivariateNormal
-args	pytorch_ver/main.py	/^args = parser.parse_args()$/;"	v
-args	pytorch_ver/show_model.py	/^args = parser.parse_args()$/;"	v
-args	pytorch_ver/test_main.py	/^args = parser.parse_args()$/;"	v
-args	pytorch_ver/tests/show_log.py	/^args = parser.parse_args()$/;"	v
-args	tensorflow_ver/main.py	/^args = parser.parse_args()$/;"	v
-ax_plot	pytorch_ver/tests/gp.py	/^def ax_plot(ax, rand_var, title):$/;"	f
-batch_size	pytorch_ver/tests/regression_test/main_batch.py	/^batch_size = 64$/;"	v
-construct_model	tensorflow_ver/model.py	/^    def construct_model(self):$/;"	m	class:CNP_Net
-construct_model	tensorflow_ver/model.py	/^    def construct_model(self, O):$/;"	m	class:Net_g
-construct_model	tensorflow_ver/model.py	/^    def construct_model(self, O):$/;"	m	class:Net_h
-construct_weights	tensorflow_ver/model.py	/^    def construct_weights(self):$/;"	m	class:CNP_Net
-construct_weights	tensorflow_ver/model.py	/^    def construct_weights(self):$/;"	m	class:Net_g
-construct_weights	tensorflow_ver/model.py	/^    def construct_weights(self):$/;"	m	class:Net_h
-contour_data	pytorch_ver/data_generator.py	/^    def contour_data(self, ax, data, c1='k', c2='gray', window_crop=False):$/;"	m	class:DataGenerator
-cov	pytorch_ver/test.py	/^cov = torch.tensor([4*(np.random.rand(51)-.5)])**2$/;"	v
-covariance_matrix	pytorch_ver/distributions/multivariate_normal_batch.py	/^    def covariance_matrix(self):$/;"	m	class:MultivariateNormal
-data_generator	pytorch_ver/datagentest.py	/^        [1, 1000], [1, 500], 1, False, False)$/;"	v
-device	pytorch_ver/main.py	/^    device = torch.device("cuda:0")$/;"	v
-device	pytorch_ver/tests/regression_test/main.py	/^device = "cuda:0" if torch.cuda.is_available() else "cpu"$/;"	v
-device	pytorch_ver/tests/regression_test/main_batch.py	/^device = "cuda:0" if torch.cuda.is_available() else "cpu"$/;"	v
-device	pytorch_ver/tests/regression_test/main_cpu.py	/^device = "cpu"$/;"	v
-entropy	pytorch_ver/distributions/multivariate_normal_batch.py	/^    def entropy(self):$/;"	m	class:MultivariateNormal
-forward	pytorch_ver/model.py	/^    def forward(self, O, T):$/;"	m	class:CNP_Net
-forward	pytorch_ver/model.py	/^    def forward(self, x):$/;"	m	class:Net_g
-forward	pytorch_ver/model.py	/^    def forward(self, x):$/;"	m	class:Net_h
-forward	pytorch_ver/test_model.py	/^    def forward(self, O, T):$/;"	m	class:CNP_Net
-forward	pytorch_ver/test_model.py	/^    def forward(self, x):$/;"	m	class:Net_g
-forward	pytorch_ver/test_model.py	/^    def forward(self, x):$/;"	m	class:Net_h
-forward	pytorch_ver/tests/gp.py	/^    def forward(self, x):$/;"	m	class:ExactGPModel
-forward	pytorch_ver/tests/regression_test/model.py	/^    def forward(self, x):$/;"	m	class:Net
-forward	pytorch_ver/tests/regression_test/model_batch_norm.py	/^    def forward(self, x):$/;"	m	class:Net
-forward	pytorch_ver/tests/regression_test/model_weight_norm.py	/^    def forward(self, x):$/;"	m	class:Net
-forward	tensorflow_ver/model.py	/^    def forward(self, O, T, weights_g, weights_h):$/;"	m	class:CNP_Net
-forward	tensorflow_ver/model.py	/^    def forward(self, inp, weights):$/;"	m	class:Net_g
-forward	tensorflow_ver/model.py	/^    def forward(self, inp, weights):$/;"	m	class:Net_h
-generate_batch	pytorch_ver/data_generator.py	/^    def generate_batch(self, batch_size=None, num_samples=None):$/;"	m	class:DataGenerator
-generate_batch	tensorflow_ver/data_generator.py	/^    def generate_batch(self, batch_size=None, num_samples=None):$/;"	m	class:DataGenerator
-generate_sample	pytorch_ver/data_generator.py	/^    def generate_sample(self, num_samples=None):$/;"	m	class:DataGenerator
-generate_sample	tensorflow_ver/data_generator.py	/^    def generate_sample(self, num_samples=None):$/;"	m	class:DataGenerator
-generate_space_sample	tensorflow_ver/data_generator.py	/^    def generate_space_sample(self, num_samples=None, step_size=None):$/;"	m	class:DataGenerator
-generate_window_samples	pytorch_ver/data_generator.py	/^    def generate_window_samples(self, window_range=None, step_size=None):$/;"	m	class:DataGenerator
-get_train_test_batch	pytorch_ver/data_generator.py	/^    def get_train_test_batch(self, batch_size=None):$/;"	m	class:DataGenerator
-get_train_test_batch	tensorflow_ver/data_generator.py	/^    def get_train_test_batch(self, batch_size=None):$/;"	m	class:DataGenerator
-get_train_test_sample	pytorch_ver/data_generator.py	/^    def get_train_test_sample(self, x_y=None):$/;"	m	class:DataGenerator
-get_train_test_sample	tensorflow_ver/data_generator.py	/^    def get_train_test_sample(self, x_y=None):$/;"	m	class:DataGenerator
-gp	pytorch_ver/gp_test.py	/^gp = GaussianProcessRegressor(kernel=kernel, optimizer=None)$/;"	v
-gp	pytorch_ver/tests/gp_sklearn.py	/^gp = GaussianProcessRegressor(kernel=kernel).fit(X_, y_)$/;"	v
-gp	pytorch_ver/tests/test.py	/^gp = GaussianProcessRegressor()$/;"	v
-has_rsample	pytorch_ver/distributions/multivariate_normal_batch.py	/^    has_rsample = True$/;"	v	class:MultivariateNormal
-help	pytorch_ver/main.py	/^        help="change variance to precision (inverse) option")$/;"	v
-help	pytorch_ver/main.py	/^        help="figure show during traing")$/;"	v
-help	pytorch_ver/main.py	/^        help="gp1d or branin")$/;"	v
-help	pytorch_ver/main.py	/^        help="learning rate (default=1e-4)")$/;"	v
-help	pytorch_ver/main.py	/^        help="load model. format: folder\/iteration")$/;"	v
-help	pytorch_ver/main.py	/^        help="log folder name in logs\/ (default: log)")$/;"	v
-help	pytorch_ver/main.py	/^        help="save loss, fig and model log")$/;"	v
-help	pytorch_ver/main.py	/^        help="use gpu")$/;"	v
-help	pytorch_ver/main.py	/^        help='batch size (default: 32)')$/;"	v
-help	pytorch_ver/main.py	/^        help='function input range (default: [-2, 2])')$/;"	v
-help	pytorch_ver/main.py	/^        help='max iteration (default=10000')$/;"	v
-help	pytorch_ver/main.py	/^        help='number of samples is random flag')$/;"	v
-help	pytorch_ver/main.py	/^        help='number of samples random range, few-shot number random range (default: [1 51])')$/;"	v
-help	pytorch_ver/main.py	/^        help='number of samples, few-shot number of train, test (default: [5, 5])')$/;"	v
-help	pytorch_ver/main.py	/^        help='number of task to train, 0 is infinite (default=0)')$/;"	v
-help	pytorch_ver/main.py	/^        help='plot window position by random in input range (default: false)')$/;"	v
-help	pytorch_ver/main.py	/^        help='plot window range (default: input_range)')$/;"	v
-help	pytorch_ver/main.py	/^        help='plot window step size (default: 1.0)')$/;"	v
-help	pytorch_ver/main.py	/^        help='train test set data are not disjoint setting flag')$/;"	v
-help	pytorch_ver/show_model.py	/^        help='load model')$/;"	v
-help	pytorch_ver/test_main.py	/^        help="figure show during traing or not (default=False)")$/;"	v
-help	pytorch_ver/test_main.py	/^        help="learning rate (default=1e-4)")$/;"	v
-help	pytorch_ver/test_main.py	/^        help="load model. format: folder\/iteration")$/;"	v
-help	pytorch_ver/test_main.py	/^        help="log folder name in logs\/ (default: log)")$/;"	v
-help	pytorch_ver/test_main.py	/^        help='function batch size, observe data batch size (default: [1,1])')$/;"	v
-help	pytorch_ver/test_main.py	/^        help='max iteration (default=10000')$/;"	v
-help	pytorch_ver/test_main.py	/^        help='train function number, 0 is infinite (default=0)')$/;"	v
-help	tensorflow_ver/main.py	/^        help="change variance to precision (inverse) option")$/;"	v
-help	tensorflow_ver/main.py	/^        help="figure show during traing")$/;"	v
-help	tensorflow_ver/main.py	/^        help="gp1d or branin")$/;"	v
-help	tensorflow_ver/main.py	/^        help="learning rate (default=1e-4)")$/;"	v
-help	tensorflow_ver/main.py	/^        help="load model. format: folder\/iteration")$/;"	v
-help	tensorflow_ver/main.py	/^        help="log folder name in logs\/ (default: log)")$/;"	v
-help	tensorflow_ver/main.py	/^        help="save loss, fig and model log")$/;"	v
-help	tensorflow_ver/main.py	/^        help="use gpu")$/;"	v
-help	tensorflow_ver/main.py	/^        help='batch size (default: 32)')$/;"	v
-help	tensorflow_ver/main.py	/^        help='function input range (default: [-2, 2])')$/;"	v
-help	tensorflow_ver/main.py	/^        help='function output range (default: [-2, 2])')$/;"	v
-help	tensorflow_ver/main.py	/^        help='max iteration (default=10000')$/;"	v
-help	tensorflow_ver/main.py	/^        help='number of samples is random flag')$/;"	v
-help	tensorflow_ver/main.py	/^        help='number of samples random range, few-shot number random range (default: [1 51])')$/;"	v
-help	tensorflow_ver/main.py	/^        help='number of samples, few-shot number of train, test (default: [5, 5])')$/;"	v
-help	tensorflow_ver/main.py	/^        help='number of task to train, 0 is infinite (default=0)')$/;"	v
-help	tensorflow_ver/main.py	/^        help='train test set data are not disjoint setting flag')$/;"	v
-idx	pytorch_ver/gp_test.py	/^idx = np.argsort(xs[0])$/;"	v
-kernel	pytorch_ver/gp_test.py	/^kernel = RBF(length_scale=length_scale)+WhiteKernel(noise_level=noise**2)$/;"	v
-kernel	pytorch_ver/tests/gp_sklearn.py	/^kernel = sigma_f * RBF(length_scale=length_scale) + WhiteKernel(noise_level=sigma**2)$/;"	v
-length_scale	pytorch_ver/gp_test.py	/^length_scale=1$/;"	v
-length_scale	pytorch_ver/tests/gp_sklearn.py	/^length_scale = .1$/;"	v
-likelihood	pytorch_ver/tests/gp.py	/^likelihood = GaussianLikelihood(log_noise_prior=$/;"	v
-log_prob	pytorch_ver/distributions/multivariate_normal_batch.py	/^    def log_prob(self, value):$/;"	m	class:MultivariateNormal
-log_probs	pytorch_ver/test.py	/^log_probs = [normals[i].log_prob(t[1:]) for i, t in enumerate(T)]$/;"	v
-loss	pytorch_ver/tests/gp.py	/^    loss = -mll(output, train_y)$/;"	v	class:ExactGPModel
-loss_func	pytorch_ver/tests/regression_test/main.py	/^def loss_func(xs, mus, vars):$/;"	f
-loss_func	pytorch_ver/tests/regression_test/main_batch.py	/^def loss_func(xs, mus, vars):$/;"	f
-loss_func	pytorch_ver/tests/regression_test/main_cpu.py	/^def loss_func(xs, mus, vars):$/;"	f
-main	pytorch_ver/main.py	/^def main():$/;"	f
-main	pytorch_ver/test_main.py	/^def main():$/;"	f
-main	pytorch_ver/tests/regression_test/main.py	/^def main():$/;"	f
-main	pytorch_ver/tests/regression_test/main_batch.py	/^def main():$/;"	f
-main	pytorch_ver/tests/regression_test/main_cpu.py	/^def main():$/;"	f
-main	tensorflow_ver/main.py	/^def main():$/;"	f
-make_fig_ax	pytorch_ver/data_generator.py	/^    def make_fig_ax(self, fig):$/;"	m	class:DataGenerator
-make_fig_ax	tensorflow_ver/data_generator.py	/^    def make_fig_ax(self, fig):$/;"	m	class:DataGenerator
-mean	pytorch_ver/distributions/multivariate_normal_batch.py	/^    def mean(self):$/;"	m	class:MultivariateNormal
-mll	pytorch_ver/tests/gp.py	/^mll = gpytorch.mlls.ExactMarginalLogLikelihood(likelihood, model)$/;"	v
-model	pytorch_ver/show_model.py	/^model = torch.load(args.load_model)$/;"	v
-model	pytorch_ver/tests/gp.py	/^model = ExactGPModel(train_x.data, train_y.data, likelihood)$/;"	v
-model	pytorch_ver/tests/show_log.py	/^model = torch.load(args.model)$/;"	v
-mu	pytorch_ver/test.py	/^mu = torch.tensor([4*(np.random.rand(51)-.5)])$/;"	v
-mu	tensorflow_ver/test.py	/^    mu = tf.Variable([1000000, 1], dtype=tf.float32)$/;"	v
-n_observation	pytorch_ver/gp_test.py	/^n_observation=51$/;"	v
-noise	pytorch_ver/gp_test.py	/^noise=.1$/;"	v
-normals	pytorch_ver/test.py	/^normals = [MultivariateNormal(mu, torch.diag(cov)) for mu_, cov_ in $/;"	v
-normals	tensorflow_ver/test.py	/^    normals = [tf.distributions.Normal(mu[i], sig[i]**2) for i in range(1000000)]$/;"	v
-observed_pred	pytorch_ver/tests/gp.py	/^    observed_pred = likelihood(model(test_x))$/;"	v
-optimizer	pytorch_ver/tests/gp.py	/^optimizer = torch.optim.Adam([$/;"	v
-output	pytorch_ver/tests/gp.py	/^    output = model(train_x)$/;"	v	class:ExactGPModel
-parser	pytorch_ver/main.py	/^parser = argparse.ArgumentParser()$/;"	v
-parser	pytorch_ver/show_model.py	/^parser = argparse.ArgumentParser()$/;"	v
-parser	pytorch_ver/test_main.py	/^parser = argparse.ArgumentParser()$/;"	v
-parser	pytorch_ver/tests/show_log.py	/^parser = argparse.ArgumentParser()$/;"	v
-parser	tensorflow_ver/main.py	/^parser = argparse.ArgumentParser()$/;"	v
-plot_branin	pytorch_ver/data_generator.py	/^    def plot_branin(self, ax, data, c='c'):$/;"	m	class:DataGenerator
-plot_data	pytorch_ver/data_generator.py	/^    def plot_data(self, ax, data, c1='k', c2='gray', window_crop=False):$/;"	m	class:DataGenerator
-plot_data	tensorflow_ver/data_generator.py	/^    def plot_data(self, ax, data, c1='k', c2='gray'):$/;"	m	class:DataGenerator
-plot_fig	pytorch_ver/test_main.py	/^def plot_fig(fig, x, y_min, y_cov, color='k'):$/;"	f
-plot_fill_xy	pytorch_ver/utils/figure.py	/^    def plot_fill_xy(self, x, y_mu, y_cov, color_l='k', color_f='k',$/;"	m	class:Figure
-plot_gp	pytorch_ver/data_generator.py	/^    def plot_gp(self, ax, train, data, c='c'):$/;"	m	class:DataGenerator
-plot_xy	pytorch_ver/utils/figure.py	/^    def plot_xy(self, x, y, color='k'):$/;"	m	class:Figure
-precision_matrix	pytorch_ver/distributions/multivariate_normal_batch.py	/^    def precision_matrix(self):$/;"	m	class:MultivariateNormal
-rsample	pytorch_ver/distributions/multivariate_normal_batch.py	/^    def rsample(self, sample_shape=torch.Size()):$/;"	m	class:MultivariateNormal
-scale_tril	pytorch_ver/distributions/multivariate_normal_batch.py	/^    def scale_tril(self):$/;"	m	class:MultivariateNormal
-scatter_data	pytorch_ver/data_generator.py	/^    def scatter_data(self, ax, data, c='k'):$/;"	m	class:DataGenerator
-scatter_data	tensorflow_ver/data_generator.py	/^    def scatter_data(self, ax, data, c='k'):$/;"	m	class:DataGenerator
-scatter_xy	pytorch_ver/utils/figure.py	/^    def scatter_xy(self, x, y, color='k'):$/;"	m	class:Figure
-set_axis	pytorch_ver/utils/figure.py	/^    def set_axis(self, xlim=[-2,2], ylim=[-3,3]):$/;"	m	class:Figure
-sig	tensorflow_ver/test.py	/^    sig = tf.Variable([1000000, 1], dtype=tf.float32)$/;"	v
-sigma	pytorch_ver/tests/gp_sklearn.py	/^sigma = .1$/;"	v
-sigma_f	pytorch_ver/tests/gp_sklearn.py	/^sigma_f = 1$/;"	v
-support	pytorch_ver/distributions/multivariate_normal_batch.py	/^    support = constraints.real$/;"	v	class:MultivariateNormal
-test_data	pytorch_ver/datagentest.py	/^test_data = np.concatenate((test_x, $/;"	v
-test_x	pytorch_ver/tests/gp.py	/^test_x = torch.linspace(x_min, x_max, 51)$/;"	v
-train_x	pytorch_ver/tests/gp.py	/^train_x = torch.linspace(x_min, x_max, 31)$/;"	v
-train_y	pytorch_ver/tests/gp.py	/^train_y = torch.sin(train_x*3*math.pi) + torch.rand(train_x.size())*0.1$/;"	v
-training_iter	pytorch_ver/tests/gp.py	/^training_iter = 50$/;"	v
-variance	pytorch_ver/distributions/multivariate_normal_batch.py	/^    def variance(self):$/;"	m	class:MultivariateNormal
-window_crop	pytorch_ver/data_generator.py	/^    def window_crop(self, x, window_range=None):$/;"	m	class:DataGenerator
-x	pytorch_ver/test.py	/^x = 4*(np.random.rand(51)-.5)$/;"	v
-x	pytorch_ver/tests/test.py	/^x = np.linspace(-2, 2, 4*5)[:, None]$/;"	v
-x2	pytorch_ver/test.py	/^x2 = 4*(np.random.rand(51)-.5)$/;"	v
-x_max	pytorch_ver/gp_test.py	/^x_max = 2$/;"	v
-x_max	pytorch_ver/tests/gp.py	/^x_max = 3$/;"	v
-x_max	pytorch_ver/tests/gp_sklearn.py	/^x_max = 1$/;"	v
-x_min	pytorch_ver/gp_test.py	/^x_min = -2$/;"	v
-x_min	pytorch_ver/tests/gp.py	/^x_min = 0$/;"	v
-x_min	pytorch_ver/tests/gp_sklearn.py	/^x_min = 0$/;"	v
-xs	pytorch_ver/gp_test.py	/^xs = np.zeros((10, n_observation))$/;"	v
-y	pytorch_ver/gp_test.py	/^y = gp.sample_y(xs[0]).reshape(-1, 1)$/;"	v
-y	pytorch_ver/test.py	/^y = 4*(np.random.rand(51)-.5)$/;"	v
-y	pytorch_ver/tests/gp_sklearn.py	/^y = np.random.rand(X_.shape[0])$/;"	v
-y	pytorch_ver/tests/gp_sklearn.py	/^y = np.sin(X*2*np.pi) + np.random.rand(X.shape[0])*.1$/;"	v
-y	pytorch_ver/tests/test.py	/^y = gp.sample_y(x, random_state = 1)$/;"	v
-y_	pytorch_ver/tests/gp_sklearn.py	/^y_ = y[:, None] $/;"	v
+CNP_Net	model.py	/^class CNP_Net(nn.Module):$/;"	c
+CNP_Net	tests/test_model.py	/^class CNP_Net(nn.Module):$/;"	c
+DataGenerator	data_generator.py	/^class DataGenerator():$/;"	c
+ExactGPModel	tests/gp.py	/^class ExactGPModel(gpytorch.models.ExactGP):$/;"	c
+Figure	utils/figure.py	/^class Figure():$/;"	c
+MultivariateNormal	tests/distributions/multivariate_normal_batch.py	/^class MultivariateNormal(Distribution):$/;"	c
+Net	tests/regression_test/model.py	/^class Net(nn.Module):$/;"	c
+Net	tests/regression_test/model_batch_norm.py	/^class Net(nn.Module):$/;"	c
+Net	tests/regression_test/model_weight_norm.py	/^class Net(nn.Module):$/;"	c
+Net_g	model.py	/^class Net_g(nn.Module):$/;"	c
+Net_g	tests/test_model.py	/^class Net_g(nn.Module):$/;"	c
+Net_h	model.py	/^class Net_h(nn.Module):$/;"	c
+Net_h	tests/test_model.py	/^class Net_h(nn.Module):$/;"	c
+Nets	tests/regression_test/model.py	/^class Nets(nn.Module):$/;"	c
+T	tests/test.py	/^T = torch.tensor(np.concatenate(([x], [y]), axis=0))$/;"	v
+X	data_generator_test.py	/^X = data_gen.generate_window_samples()$/;"	v
+X	tests/gp_sklearn.py	/^X = np.linspace(x_min, x_max, 1)$/;"	v
+X_	tests/gp_sklearn.py	/^X_ = X[:, None]$/;"	v
+X_test	tests/gp_sklearn.py	/^X_test = np.linspace(x_min, x_max, 51)$/;"	v
+X_test_	tests/gp_sklearn.py	/^X_test_ = X_test[:, None]$/;"	v
+__init__	data_generator.py	/^            input_range, window_range, window_step_size, random_window_position,$/;"	m	class:DataGenerator
+__init__	model.py	/^                 layers_dim={'h':[8, 32, 128], 'g':[128, 64, 32, 16, 8]}):$/;"	m	class:CNP_Net
+__init__	model.py	/^    def __init__(self, input_dim, layers_dim):$/;"	m	class:Net_h
+__init__	model.py	/^    def __init__(self, layers_dim, io_dims):$/;"	m	class:Net_g
+__init__	tests/distributions/multivariate_normal_batch.py	/^    def __init__(self, loc, covariance_matrix=None, precision_matrix=None, scale_tril=None, validate_args=None):$/;"	m	class:MultivariateNormal
+__init__	tests/gp.py	/^    def __init__(self, train_x, train_y, likelihood):$/;"	m	class:ExactGPModel
+__init__	tests/regression_test/model.py	/^    def __init__(self, n_feature, n_hidden, n_output):$/;"	m	class:Net
+__init__	tests/regression_test/model.py	/^    def __init__(self, n_feature, n_hiddens, n_output):$/;"	m	class:Nets
+__init__	tests/regression_test/model_batch_norm.py	/^    def __init__(self, n_feature, n_hidden, n_output):$/;"	m	class:Net
+__init__	tests/regression_test/model_weight_norm.py	/^    def __init__(self, n_feature, n_hidden, n_output):$/;"	m	class:Net
+__init__	tests/test_model.py	/^                 layers_dim={'h':[8, 32, 128], 'g':[128+1, 64, 32, 16, 8]}):$/;"	m	class:CNP_Net
+__init__	tests/test_model.py	/^    def __init__(self, input_dim, layers_dim):$/;"	m	class:Net_h
+__init__	tests/test_model.py	/^    def __init__(self, layers_dim, output_dim):$/;"	m	class:Net_g
+__init__	utils/figure.py	/^    def __init__(self, show=False):$/;"	m	class:Figure
+_batch_diag	tests/distributions/multivariate_normal_batch.py	/^def _batch_diag(bmat):$/;"	f
+_batch_inverse	tests/distributions/multivariate_normal_batch.py	/^def _batch_inverse(bmat):$/;"	f
+_batch_mahalanobis	tests/distributions/multivariate_normal_batch.py	/^def _batch_mahalanobis(L, x):$/;"	f
+_batch_mv	tests/distributions/multivariate_normal_batch.py	/^def _batch_mv(bmat, bvec):$/;"	f
+_batch_potrf_lower	tests/distributions/multivariate_normal_batch.py	/^def _batch_potrf_lower(bmat):$/;"	f
+_get_batch_shape	tests/distributions/multivariate_normal_batch.py	/^def _get_batch_shape(bmat, bvec):$/;"	f
+arg_constraints	tests/distributions/multivariate_normal_batch.py	/^    arg_constraints = {'loc': constraints.real_vector,$/;"	v	class:MultivariateNormal
+args	main.py	/^args = parser.parse_args()$/;"	v
+args	show_model.py	/^args = parser.parse_args()$/;"	v
+args	tests/show_log.py	/^args = parser.parse_args()$/;"	v
+args	tests/test_main.py	/^args = parser.parse_args()$/;"	v
+ax_plot	tests/gp.py	/^def ax_plot(ax, rand_var, title):$/;"	f
+batch_size	tests/regression_test/main_batch.py	/^batch_size = 64$/;"	v
+contour_data	data_generator.py	/^    def contour_data(self, ax, data, c1='k', c2='gray', window_crop=False):$/;"	m	class:DataGenerator
+cov	tests/test.py	/^cov = torch.tensor([4*(np.random.rand(51)-.5)])**2$/;"	v
+covariance_matrix	tests/distributions/multivariate_normal_batch.py	/^    def covariance_matrix(self):$/;"	m	class:MultivariateNormal
+data_gen	data_generator_test.py	/^data_gen = DataGenerator('branin', 1, True, False, [1, 10], [1, 10], [[-5, 10], [0, 15]], [[-5, 10], [0, 15]], 1, False, 0)$/;"	v
+data_generator	datagentest.py	/^        [1, 1000], [1, 500], 1, False, False)$/;"	v
+device	main.py	/^    device = torch.device("cpu")$/;"	v
+device	main.py	/^    device = torch.device("cuda:"+str(args.gpu))$/;"	v
+device	tests/regression_test/main.py	/^device = "cuda:0" if torch.cuda.is_available() else "cpu"$/;"	v
+device	tests/regression_test/main_batch.py	/^device = "cuda:0" if torch.cuda.is_available() else "cpu"$/;"	v
+device	tests/regression_test/main_cpu.py	/^device = "cpu"$/;"	v
+entropy	tests/distributions/multivariate_normal_batch.py	/^    def entropy(self):$/;"	m	class:MultivariateNormal
+forward	model.py	/^    def forward(self, O, T):$/;"	m	class:CNP_Net
+forward	model.py	/^    def forward(self, x):$/;"	m	class:Net_g
+forward	model.py	/^    def forward(self, x):$/;"	m	class:Net_h
+forward	tests/gp.py	/^    def forward(self, x):$/;"	m	class:ExactGPModel
+forward	tests/regression_test/model.py	/^    def forward(self, x):$/;"	m	class:Net
+forward	tests/regression_test/model_batch_norm.py	/^    def forward(self, x):$/;"	m	class:Net
+forward	tests/regression_test/model_weight_norm.py	/^    def forward(self, x):$/;"	m	class:Net
+forward	tests/test_model.py	/^    def forward(self, O, T):$/;"	m	class:CNP_Net
+forward	tests/test_model.py	/^    def forward(self, x):$/;"	m	class:Net_g
+forward	tests/test_model.py	/^    def forward(self, x):$/;"	m	class:Net_h
+generate_batch	data_generator.py	/^    def generate_batch(self, batch_size=None, num_samples=None):$/;"	m	class:DataGenerator
+generate_sample	data_generator.py	/^    def generate_sample(self, num_samples=None):$/;"	m	class:DataGenerator
+generate_window_samples	data_generator.py	/^    def generate_window_samples(self, window_range=None, step_size=None):$/;"	m	class:DataGenerator
+get_train_test_batch	data_generator.py	/^    def get_train_test_batch(self, batch_size=None):$/;"	m	class:DataGenerator
+get_train_test_sample	data_generator.py	/^    def get_train_test_sample(self, x_y=None):$/;"	m	class:DataGenerator
+gp	tests/gp_sklearn.py	/^gp = GaussianProcessRegressor(kernel=kernel).fit(X_, y_)$/;"	v
+gp	tests/gp_test.py	/^gp = GaussianProcessRegressor(kernel=kernel, optimizer=None)$/;"	v
+has_rsample	tests/distributions/multivariate_normal_batch.py	/^    has_rsample = True$/;"	v	class:MultivariateNormal
+help	main.py	/^        help="figure show during traing")$/;"	v
+help	main.py	/^        help="gp1d or branin")$/;"	v
+help	main.py	/^        help="learning rate (default=1e-4)")$/;"	v
+help	main.py	/^        help="load model. format: folder\/iteration")$/;"	v
+help	main.py	/^        help="log folder name in logs\/ (default: log)")$/;"	v
+help	main.py	/^        help="save loss, fig and model log")$/;"	v
+help	main.py	/^        help="test flag (not train)")$/;"	v
+help	main.py	/^        help="use gpu")$/;"	v
+help	main.py	/^        help='batch size (default: 32)')$/;"	v
+help	main.py	/^        help='function input range (default: [-2, 2])')$/;"	v
+help	main.py	/^        help='max iteration (default=10000')$/;"	v
+help	main.py	/^        help='number of samples is random flag')$/;"	v
+help	main.py	/^        help='number of samples random range, few-shot number random range (default: [1 51])')$/;"	v
+help	main.py	/^        help='number of samples, few-shot number of train, test (default: [5, 5])')$/;"	v
+help	main.py	/^        help='number of task to train, 0 is infinite (default=0)')$/;"	v
+help	main.py	/^        help='plot window position by random in input range (default: false)')$/;"	v
+help	main.py	/^        help='plot window range (default: input_range)')$/;"	v
+help	main.py	/^        help='plot window step size (default: 1.0)')$/;"	v
+help	main.py	/^        help='train test set data are not disjoint setting flag')$/;"	v
+help	show_model.py	/^        help='load model')$/;"	v
+help	tests/test_main.py	/^        help="figure show during traing or not (default=False)")$/;"	v
+help	tests/test_main.py	/^        help="learning rate (default=1e-4)")$/;"	v
+help	tests/test_main.py	/^        help="load model. format: folder\/iteration")$/;"	v
+help	tests/test_main.py	/^        help="log folder name in logs\/ (default: log)")$/;"	v
+help	tests/test_main.py	/^        help='function batch size, observe data batch size (default: [1,1])')$/;"	v
+help	tests/test_main.py	/^        help='max iteration (default=10000')$/;"	v
+help	tests/test_main.py	/^        help='train function number, 0 is infinite (default=0)')$/;"	v
+idx	tests/gp_test.py	/^idx = np.argsort(xs[0])$/;"	v
+kernel	tests/gp_sklearn.py	/^kernel = sigma_f * RBF(length_scale=length_scale) + WhiteKernel(noise_level=sigma**2)$/;"	v
+kernel	tests/gp_test.py	/^kernel = RBF(length_scale=length_scale)+WhiteKernel(noise_level=noise**2)$/;"	v
+length_scale	tests/gp_sklearn.py	/^length_scale = .1$/;"	v
+length_scale	tests/gp_test.py	/^length_scale=1$/;"	v
+likelihood	tests/gp.py	/^likelihood = GaussianLikelihood(log_noise_prior=$/;"	v
+log_prob	tests/distributions/multivariate_normal_batch.py	/^    def log_prob(self, value):$/;"	m	class:MultivariateNormal
+log_probs	tests/test.py	/^log_probs = [normals[i].log_prob(t[1:]) for i, t in enumerate(T)]$/;"	v
+loss	tests/gp.py	/^    loss = -mll(output, train_y)$/;"	v	class:ExactGPModel
+loss_func	tests/regression_test/main.py	/^def loss_func(xs, mus, vars):$/;"	f
+loss_func	tests/regression_test/main_batch.py	/^def loss_func(xs, mus, vars):$/;"	f
+loss_func	tests/regression_test/main_cpu.py	/^def loss_func(xs, mus, vars):$/;"	f
+main	main.py	/^def main():$/;"	f
+main	tests/regression_test/main.py	/^def main():$/;"	f
+main	tests/regression_test/main_batch.py	/^def main():$/;"	f
+main	tests/regression_test/main_cpu.py	/^def main():$/;"	f
+main	tests/test_main.py	/^def main():$/;"	f
+make_fig_ax	data_generator.py	/^    def make_fig_ax(self, fig):$/;"	m	class:DataGenerator
+mean	tests/distributions/multivariate_normal_batch.py	/^    def mean(self):$/;"	m	class:MultivariateNormal
+mll	tests/gp.py	/^mll = gpytorch.mlls.ExactMarginalLogLikelihood(likelihood, model)$/;"	v
+model	show_model.py	/^model = torch.load(args.load_model)$/;"	v
+model	tests/gp.py	/^model = ExactGPModel(train_x.data, train_y.data, likelihood)$/;"	v
+model	tests/show_log.py	/^model = torch.load(args.model)$/;"	v
+mu	tests/test.py	/^mu = torch.tensor([4*(np.random.rand(51)-.5)])$/;"	v
+n_observation	tests/gp_test.py	/^n_observation=51$/;"	v
+noise	tests/gp_test.py	/^noise=.1$/;"	v
+normals	tests/test.py	/^normals = [MultivariateNormal(mu, torch.diag(cov)) for mu_, cov_ in $/;"	v
+observed_pred	tests/gp.py	/^    observed_pred = likelihood(model(test_x))$/;"	v
+optimizer	tests/gp.py	/^optimizer = torch.optim.Adam([$/;"	v
+output	tests/gp.py	/^    output = model(train_x)$/;"	v	class:ExactGPModel
+parser	main.py	/^parser = argparse.ArgumentParser()$/;"	v
+parser	show_model.py	/^parser = argparse.ArgumentParser()$/;"	v
+parser	tests/show_log.py	/^parser = argparse.ArgumentParser()$/;"	v
+parser	tests/test_main.py	/^parser = argparse.ArgumentParser()$/;"	v
+plot_branin	data_generator.py	/^    def plot_branin(self, ax, data, c='c'):$/;"	m	class:DataGenerator
+plot_data	data_generator.py	/^    def plot_data(self, ax, data, c1='k', c2='gray', window_crop=False):$/;"	m	class:DataGenerator
+plot_fig	tests/test_main.py	/^def plot_fig(fig, x, y_min, y_cov, color='k'):$/;"	f
+plot_fill_xy	utils/figure.py	/^    def plot_fill_xy(self, x, y_mu, y_cov, color_l='k', color_f='k',$/;"	m	class:Figure
+plot_gp	data_generator.py	/^    def plot_gp(self, ax, train, data, c='c'):$/;"	m	class:DataGenerator
+plot_xy	utils/figure.py	/^    def plot_xy(self, x, y, color='k'):$/;"	m	class:Figure
+precision_matrix	tests/distributions/multivariate_normal_batch.py	/^    def precision_matrix(self):$/;"	m	class:MultivariateNormal
+rsample	tests/distributions/multivariate_normal_batch.py	/^    def rsample(self, sample_shape=torch.Size()):$/;"	m	class:MultivariateNormal
+scale_tril	tests/distributions/multivariate_normal_batch.py	/^    def scale_tril(self):$/;"	m	class:MultivariateNormal
+scatter_data	data_generator.py	/^    def scatter_data(self, ax, data, c='k'):$/;"	m	class:DataGenerator
+scatter_xy	utils/figure.py	/^    def scatter_xy(self, x, y, color='k'):$/;"	m	class:Figure
+set_axis	utils/figure.py	/^    def set_axis(self, xlim=[-2,2], ylim=[-3,3]):$/;"	m	class:Figure
+sigma	tests/gp_sklearn.py	/^sigma = .1$/;"	v
+sigma_f	tests/gp_sklearn.py	/^sigma_f = 1$/;"	v
+support	tests/distributions/multivariate_normal_batch.py	/^    support = constraints.real$/;"	v	class:MultivariateNormal
+test	main.py	/^def test(data_generator, model, args):$/;"	f
+test_data	datagentest.py	/^test_data = np.concatenate((test_x, $/;"	v
+test_x	tests/gp.py	/^test_x = torch.linspace(x_min, x_max, 51)$/;"	v
+train	main.py	/^def train(data_generator, model, optimizer, args):$/;"	f
+train_x	tests/gp.py	/^train_x = torch.linspace(x_min, x_max, 31)$/;"	v
+train_y	tests/gp.py	/^train_y = torch.sin(train_x*3*math.pi) + torch.rand(train_x.size())*0.1$/;"	v
+training_iter	tests/gp.py	/^training_iter = 50$/;"	v
+use_cuda	main.py	/^    use_cuda = False$/;"	v
+use_cuda	main.py	/^    use_cuda = True$/;"	v
+variance	tests/distributions/multivariate_normal_batch.py	/^    def variance(self):$/;"	m	class:MultivariateNormal
+window_crop	data_generator.py	/^    def window_crop(self, x, window_range=None):$/;"	m	class:DataGenerator
+x	tests/test.py	/^x = 4*(np.random.rand(51)-.5)$/;"	v
+x2	tests/test.py	/^x2 = 4*(np.random.rand(51)-.5)$/;"	v
+x_max	tests/gp.py	/^x_max = 3$/;"	v
+x_max	tests/gp_sklearn.py	/^x_max = 1$/;"	v
+x_max	tests/gp_test.py	/^x_max = 2$/;"	v
+x_min	tests/gp.py	/^x_min = 0$/;"	v
+x_min	tests/gp_sklearn.py	/^x_min = 0$/;"	v
+x_min	tests/gp_test.py	/^x_min = -2$/;"	v
+xs	tests/gp_test.py	/^xs = np.zeros((10, n_observation))$/;"	v
+y	tests/gp_sklearn.py	/^y = np.random.rand(X_.shape[0])$/;"	v
+y	tests/gp_sklearn.py	/^y = np.sin(X*2*np.pi) + np.random.rand(X.shape[0])*.1$/;"	v
+y	tests/gp_test.py	/^y = gp.sample_y(xs[0]).reshape(-1, 1)$/;"	v
+y	tests/test.py	/^y = 4*(np.random.rand(51)-.5)$/;"	v
+y_	tests/gp_sklearn.py	/^y_ = y[:, None] $/;"	v

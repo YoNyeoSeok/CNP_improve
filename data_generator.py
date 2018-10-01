@@ -17,7 +17,7 @@ class DataGenerator():
         self.num_samples = num_samples
         self.num_samples_range = num_samples_range
         self.input_range = input_range
-        self.window_range = window_range
+        self.window_range = window_range if window_range is not None else input_range
         self.window_step_size = window_step_size
         self.random_window_positino = random_window_position
         self.task_limit = task_limit
@@ -46,9 +46,10 @@ class DataGenerator():
 
         elif datasource == 'branin':
             self.io_dims = [2, 1]
-            if len(self.input_range) == 1:
+
+            if len(np.array(self.input_range).shape) == 1:
                 self.input_range = np.repeat([self.input_range], [2], axis=0)
-            if len(self.window_range) == 1:
+            if len(np.array(self.window_range).shape) == 1:
                 self.window_range = np.repeat([self.window_range], [2], axis=0)
 
             self.a = a = 1
