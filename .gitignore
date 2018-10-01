@@ -1,0 +1,17 @@
+### vim ###
+*.swp
+
+### python ###
+__pycache__/
+*.un~
+*.pyc
+
+### tests ###
+tests/
+*test*
+
+### logs ###
+logs/*
+
+### backups ###
+*.backup
