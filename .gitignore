@@ -6,20 +6,13 @@
 *.un~
 *.pyc
 
-### torch ###
-pytorch_ver/logs/*
-pytorch_ver/tests/*
-
-### tensorflow ###
-tensorflow_ver/logs/*
-tensorflow_ver/tests/*
-
 ### tests ###
-*tests/
+*tests/i
 *test*
 
 ### logs ###
 *logs/
+*logs/*
 
 ### backups ###
 *.backup
