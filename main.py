@@ -113,7 +113,7 @@ def main():
                 torch.cat((torch.tensor(Tx).to(device), torch.tensor(Ty).to(device)), 1)),
             x_train_batch, y_train_batch, x_test_batch, y_test_batch))
 
-        loss = -torch.sum(torch.cat(batch_log_prob)) / args.batch_size
+        loss = -sum(batch_log_prob) / args.batch_size
         
         if not args.test:
             optimizer.zero_grad()

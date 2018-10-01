@@ -119,9 +119,7 @@ class CNP_Net(nn.Module):
 #        log_probs = [normals[i].log_prob(t[self.io_dims[0]:]) for i, t in enumerate(T)]
 #        print('log_probs', time.time() - t)    
         """
-        log_prob = 0
-        for p in log_probs:
-            log_prob += p
+        log_prob = torch.sum(log_prob)
 #        diff = 0
 #        for p, p_ in zip(l, l_):
 #            diff += p-p_
