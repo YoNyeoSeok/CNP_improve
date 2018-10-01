@@ -70,6 +70,13 @@ def train(data_generator, model, optimizer, args):
         # print(t)
         loss = 0
         #x, y = data_generator.generate_batch()
+        train_batch, test_batch = data_generator.get_train_test_batch(args.batch_size)
+        x_train_batch, y_train_batch = train_batch
+        x_test_batch, y_test_batch = test_batch
+
+        training_set = torch.cat((torch.cat(x_train_batch, axis=0),torch.cat(y_train_batch, axis=0)), axis=1)
+        print(traing_set.shape)
+        break
         for p in range(args.batch_size):
             # data
             # x, y = data_generator.generate_sample()
@@ -149,8 +156,7 @@ def train(data_generator, model, optimizer, args):
                 phi, _ = model(training_set, test_set)
                 if use_cuda:
                     print('after forward current gpu memory usage', torch.cuda.memory_allocated(torch.cuda.current_device()))
-                if use_cuda:
-                    phi = phi.cpu()
+                if use_cuda: phi = phi.cpu()
                 # print('phi', phi.shape)
                 predict_y_mu = phi[:,:data_generator.io_dims[1]].data.numpy()
                 predict_y_cov = phi[:,data_generator.io_dims[1]:].data.numpy()**2
@@ -206,9 +212,7 @@ def main():
         model = CNP_Net(io_dims=data_generator.io_dims)#.float()
 
     model.double()
-
-    if use_cuda:
-        model.to(device)
+    model.to(device)
 #    for m, p in model.named_parameters():
 #        print(m, p)
 #    print(model)
@@ -225,40 +229,88 @@ def main():
         # print(t)
         loss = 0
         #x, y = data_generator.generate_batch()
-        for p in range(args.batch_size):
-            # data
-            # x, y = data_generator.generate_sample()
-            train, test = data_generator.get_train_test_sample()
-            # print('train shape', train)
-            # print('test shape', test)
-            x_train, y_train = train
-            x_test, y_test = test
+        train_batch, test_batch = data_generator.get_train_test_batch(args.batch_size)
+#        print(type(train_batch), type(test_batch))
+#        print(type(train_batch[0]), type(train_batch[1]), type(test_batch[0]), type(test_batch[1]))
+#        print(len(train_batch[0]), len(train_batch[1]), len(test_batch[0]), len(test_batch[1]))
+#        print(len(train_batch[0][0]), len(train_batch[0][1]))
+        x_train_batch, y_train_batch = train_batch
+        x_test_batch, y_test_batch = test_batch
+#        print(len(x_train_batch[0]))
+#        torch.tensor(x_train_batch)
+#        batch_training_set = torch.cat((torch.tensor(x_train_batch),
+#                                        torch.tensor(y_train_batch)), 2)
+#        batch_test_set = torch.cat((torch.tensor(x_test_batch),
+#                                        torch.tensor(y_test_batch)), 2)
+        #        if use_cuda:
+#            batch_training_set = batch_training_set.to(device)
+#            batch_test_set = batch_test_set.to(device)
+        #batch_phi, batch_log_prob = zip(*map(model, batch_training_set, batch_test_set))
 
-            # print(x_train, y_train, x_test, y_test)
-            # print('shapes', x_train.shape, y_train.shape, x_test.shape, y_test.shape)
-            # print(x_test.shape, y_test.shape, x_train.shape, y_train.shape)
-    
-            training_set = torch.cat((torch.tensor(x_train),
-                        torch.tensor(y_train)),
-                    dim=1)
-            test_set = torch.cat((torch.tensor(x_test),
-                        torch.tensor(y_test)),
-                    dim=1)
-            #training_set.float()
-            #test_set.float()
-            training_set.double()
-            test_set.double()
+        batch_phi, batch_log_prob = zip(*map(lambda Ox, Oy, Tx, Ty:
+            model(torch.cat((torch.tensor(Ox).to(device), torch.tensor(Oy).to(device)), 1),
+                torch.cat((torch.tensor(Tx).to(device), torch.tensor(Ty).to(device)), 1)),
+            x_train_batch, y_train_batch, x_test_batch, y_test_batch))
+#        print(list(batch_log_prob))
+        #batch_phi, batch_log_prob = map(model, batch_training_set, batch_test_set)
+#        print(len(batch_log_prob))
+        loss = -torch.sum(torch.cat(batch_log_prob)) / args.batch_size
         
-            if use_cuda:
-                training_set = training_set.to(device)
-                test_set = test_set.to(device)
-            #print(training_set.shape, test_set.shape)
-            # print('train, test', training_set.shape, test_set.shape)
-            phi, log_prob = model(training_set, test_set)
-            # print('phi', phi.shape)
-    
-            loss += -torch.sum(log_prob)
-        loss = loss / args.batch_size
+
+#        x_train_batch = np.concatenate(x_train_batch, axis=0)
+#        y_train_batch = np.concatenate(y_train_batch, axis=0)
+#        x_test_batch = np.concatenate(x_test_batch, axis=0)
+#        y_test_batch = np.concatenate(y_test_batch, axis=0)
+#
+#        training_set = torch.cat((torch.tensor(x_train_batch),
+#                                torch.tensor(y_train_batch)), dim=1)
+#        test_set = torch.cat((torch.tensor(x_test_batch),
+#                                torch.tensor(y_test_batch)), dim=1)
+#        if use_cuda:
+#            training_set = training_set.to(device)
+#            test_set = test_set.to(device)
+#        #print(training_set.shape, test_set.shape)
+#        # print('train, test', training_set.shape, test_set.shape)
+#        phi, log_prob = model(training_set, test_set)
+#        # print('phi', phi.shape)
+#       
+#        phi, log_prob = model(training_set, test_set)
+#        loss = -torch.sum(log_prob) / args.batch_size
+
+#        for p in range(args.batch_size):
+#            # data
+#            # x, y = data_generator.generate_sample()
+#            train, test = data_generator.get_train_test_sample()
+#            # print('train shape', train)
+#            # print('test shape', test)
+#            x_train, y_train = train
+#            x_test, y_test = test
+#
+#            # print(x_train, y_train, x_test, y_test)
+#            # print('shapes', x_train.shape, y_train.shape, x_test.shape, y_test.shape)
+#            # print(x_test.shape, y_test.shape, x_train.shape, y_train.shape)
+#    
+#            training_set = torch.cat((torch.tensor(x_train),
+#                        torch.tensor(y_train)),
+#                    dim=1)
+#            test_set = torch.cat((torch.tensor(x_test),
+#                        torch.tensor(y_test)),
+#                    dim=1)
+#            #training_set.float()
+#            #test_set.float()
+#            training_set.double()
+#            test_set.double()
+#        
+#            if use_cuda:
+#                training_set = training_set.to(device)
+#                test_set = test_set.to(device)
+#            #print(training_set.shape, test_set.shape)
+#            # print('train, test', training_set.shape, test_set.shape)
+#            phi, log_prob = model(training_set, test_set)
+#            # print('phi', phi.shape)
+#    
+#            loss += -torch.sum(log_prob)
+#        loss = loss / args.batch_size
 
         if args.log:
             with open("logs/%s/log.txt"%args.log_folder, "a") as log_file:
