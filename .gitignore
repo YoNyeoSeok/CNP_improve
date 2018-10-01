@@ -2,17 +2,16 @@
 *.swp
 
 ### python ###
-*__pycache__/
+__pycache__/
 *.un~
 *.pyc
 
 ### tests ###
-*tests/i
+tests/
 *test*
 
 ### logs ###
-*logs/
-*logs/*
+logs/
 
 ### backups ###
 *.backup
