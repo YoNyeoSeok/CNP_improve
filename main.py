@@ -165,6 +165,8 @@ def main():
             if args.log:
                 plt.savefig('logs/%s/%05d.png'%(args.log_folder, t))
 
+    if args.log:
+        torch.save(model, "logs/%s/%05d.pt"%(args.log_folder, args.max_epoch-1))
 if __name__ == '__main__':
     main()
 
