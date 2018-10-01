@@ -136,13 +136,13 @@ def main():
             if args.gpu:
                 training_set = training_set.to(device)
                 test_set = test_set.to(device)
-                print('before forward current gpu memory usage', torch.cuda.memory_allocated(torch.cuda.current_device()))
+                #print('before forward current gpu memory usage', torch.cuda.memory_allocated(torch.cuda.current_device()))
             print(training_set.shape, test_set.shape)
             # print('train, test', training_set.shape, test_set.shape)
             phi, log_prob = model(training_set, test_set)
             # print('phi', phi.shape)
             if args.gpu:
-                print('after forward current gpu memory usage', torch.cuda.memory_allocated(torch.cuda.current_device()))
+                #print('after forward current gpu memory usage', torch.cuda.memory_allocated(torch.cuda.current_device()))
     
             loss += -torch.sum(log_prob)
         loss = loss / args.batch_size

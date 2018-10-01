@@ -65,13 +65,19 @@ class CNP_Net(nn.Module):
 #        if self.io_dims[1] != 1: 
 #            print("multivariate regression is not supported")
 #            return
-        t = time.time()
         self.mu = self.phi[:,:self.io_dims[1]]
         self.sig = self.softplus(self.phi[:,self.io_dims[1]:])
         
-        t = time.time()
         log_probs = -0.5*torch.log(2*np.pi*self.sig**2) - 0.5*(self.mu-T[:,self.io_dims[0]:])**2/self.sig**2
 
+#        normals = [MultivariateNormal(mu, torch.diag(cov)) for mu, cov in 
+#                zip(self.mu, self.sig**2)]
+#        log_probs_ = [normals[i].log_prob(t[self.io_dims[0]:]) for i, t in enumerate(T)]
+#        l = log_probs.cpu().detach().numpy()
+#        l_ = np.array([l.cpu().detach().numpy() for l in log_probs_])
+#        print(l.shape, l_.shape)
+#        print([log_probs_)
+#        print(l.reshape(-1)-l_)
         """
         log_probs = []
         def func(m, s, t):
@@ -111,12 +117,17 @@ class CNP_Net(nn.Module):
 #        print('normals', time.time() - t)
 #        t = time.time()
 #        log_probs = [normals[i].log_prob(t[self.io_dims[0]:]) for i, t in enumerate(T)]
-#        print('log_probs', time.time() - t)
-
+#        print('log_probs', time.time() - t)    
         """
         log_prob = 0
         for p in log_probs:
             log_prob += p
+#        diff = 0
+#        for p, p_ in zip(l, l_):
+#            diff += p-p_
+#        print(diff.shape)
+#        print(diff)
+#        print(len(log_probs))
         
         return self.phi, log_prob/len(log_probs)
 

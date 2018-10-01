@@ -46,6 +46,10 @@ class DataGenerator():
 
         elif datasource == 'branin':
             self.io_dims = [2, 1]
+            if len(self.input_range) == 1:
+                self.input_range = np.repeat([self.input_range], [2], axis=0)
+            if len(self.window_range) == 1:
+                self.window_range = np.repeat([self.window_range], [2], axis=0)
 
             self.a = a = 1
             self.b = b = 5.1/(4*np.pi**2)
@@ -53,7 +57,7 @@ class DataGenerator():
             self.r = r = 6
             self.s = s = 10
             self.t = t = 1/(8*np.pi)
-            self.f = f = lambda x, y: a*(y-b*x**2+c*x-r) + s*(1-t)*np.cos(x) + s#\
+            self.f = f = lambda x1, x2: a*(x2-b*x1**2+c*x1-r) + s*(1-t)*np.cos(x1) + s#\
                     #                                   if x.ndim > 2 else \
                     #                                   a*(x[:,1,None]-b*x[:,0,None]**2+c*x[:,0,None]-r) + s*(1-t)*np.cos(x[:,0,None]) + s 
 
@@ -123,8 +127,10 @@ class DataGenerator():
                 x = (self.input_range[1]-self.input_range[0]) * np.random.rand(num_samples, self.io_dims[0]) + self.input_range[0]
                 y = self.gp.sample_y(x).reshape(-1, 1)
             elif self.datasource == 'branin':
-                x = (self.input_range[1]-self.input_range[0]) * np.random.rand(num_samples, self.io_dims[0]) + self.input_range[0]
-                y = self.f(x[:,None,0], x[:,None,1]) + np.random.randn(num_samples, self.io_dims[1])
+                x1 = (self.input_range[0][1]-self.input_range[0][0]) * np.random.rand(num_samples, 1) + self.input_range[0][0]
+                x2 = (self.input_range[1][1]-self.input_range[1][0]) * np.random.rand(num_samples, 1) + self.input_range[1][0]
+                y = self.f(x1, x2) + np.random.randn(num_samples, self.io_dims[1])
+                x = np.concatenate((x1, x2), axis=1)
 
         return x, y
     
@@ -139,10 +145,11 @@ class DataGenerator():
             return np.linspace(window_range[0], window_range[1], int(r/step_size + 1)).reshape(-1, 1)
             #return np.linspace(window_range[0], window_range[1], num_samples).reshape(-1, 1)
         elif self.io_dims[0] == 2:
-            r = window_range[1] - window_range[0]
-            l = np.linspace(window_range[0], window_range[1], int(r/step_size + 1)).reshape(-1, 1)
-            #l = np.linspace(window_range[0], window_range[1], int(np.sqrt(num_samples)))
-            x1, x2 = np.meshgrid(l, l)
+            r1 = window_range[0][1] - window_range[0][0]
+            l1 = np.linspace(window_range[0][0], window_range[0][1], int(r1/step_size + 1)).reshape(-1, 1)
+            r2 = window_range[1][1] - window_range[1][0]
+            l2 = np.linspace(window_range[1][0], window_range[1][1], int(r2/step_size + 1)).reshape(-1, 1)
+            x1, x2 = np.meshgrid(l1, l2)
             return np.concatenate((x1.reshape(-1, 1), x2.reshape(-1, 1)), axis=1)
 #            return np.array(zip(*(x.flat for x in np.meshgrid(l, l))))
 #            return np.vstack([x1.ravel(), x2.ravel()])
@@ -169,8 +176,8 @@ class DataGenerator():
             #ax.set_ylim(self.output_range[0], self.output_range[1])
         elif sum(self.io_dims) == 3:
             ax = fig.add_subplot(111, projection='3d')
-            ax.set_xlim(self.window_range[0], self.window_range[1])
-            ax.set_ylim(self.window_range[0], self.window_range[1])
+            ax.set_xlim(self.window_range[0][0], self.window_range[0][1])
+            ax.set_ylim(self.window_range[1][0], self.window_range[1][1])
             #ax.set_xlim(self.input_range[0], self.input_range[1])
             #ax.set_ylim(self.input_range[0], self.input_range[1])
             #ax.set_zlim(self.output_range[0], self.output_range[1])
@@ -179,6 +186,13 @@ class DataGenerator():
     def window_crop(self, x, window_range=None):
         if window_range is None:
             window_range = self.window_range
+              
+        return np.logical_and(*[np.logical_and(window_range[i][0]<=t, t<=window_range[i][1]) \
+            for i, t in enumerate(x.T)])
+
+        [a >= window_range[i][0] and a <= window_range[i][1] for i, a in enumerate(x.T)]
+        x1 = x[:,:1]
+        x1 = x[:,1:]
         return np.all(x>=window_range[0], 1).tolist() and np.all(x<=window_range[1], 1).tolist()
 
     def plot_data(self, ax, data, c1='k', c2='gray', window_crop=False):

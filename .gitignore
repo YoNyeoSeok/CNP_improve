@@ -1,19 +1,25 @@
-### torch ###
+### vim ###
+*.swp
 
-pytorch_ver/*.swp
-pytorch_ver/__pycache__
+### python ###
+*__pycache__/
+*.un~
+*.pyc
+
+### torch ###
 pytorch_ver/logs/*
 pytorch_ver/tests/*
-pytorch_ver/*.pyc
-pytorch_ver/*.backup
-pytorch_ver/*.un~
 
 ### tensorflow ###
-tensorflow_ver/*.swp
-tensorflow_ver/__pycache__
 tensorflow_ver/logs/*
 tensorflow_ver/tests/*
-tensorflow_ver/*.pyc
-tensorflow_ver/*.backup
-tensorflow_ver/*.un~
 
+### tests ###
+*tests/
+*test*
+
+### logs ###
+*logs/
+
+### backups ###
+*.backup
