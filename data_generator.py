@@ -9,7 +9,7 @@ class DataGenerator():
     def __init__(self, datasource, batch_size, \
             random_sample, disjoint_data, num_samples, num_samples_range, \
             input_range, window_range, window_step_size, random_window_position,
-            task_limit):
+            task_limit, **kwags):
         self.datasource = datasource
         self.batch_size = batch_size
         self.random_sample = random_sample
@@ -30,7 +30,7 @@ class DataGenerator():
         length_scale = 1 
         noise = .1
         kernel = RBF(length_scale=length_scale)+WhiteKernel(noise_level=noise**2)
-        self.gp = gp = GaussianProcessRegressor(kernel=kernel)#, optimizer=None)
+        self.gp = gp = GaussianProcessRegressor()#kernel=kernel)#, optimizer=None)
 
         if datasource == 'gp1d':
             self.io_dims = [1, 1]
@@ -44,6 +44,8 @@ class DataGenerator():
                     self.xs[i] = xs[i] = (input_range[1]-input_range[0]) * (np.random.rand(num_samples, self.io_dims[0]) - .5)
                     self.ys[i] = ys[i] = gp.sample_y(xs[i])
 
+#        elif datasource == 'sinusoidal':
+
         elif datasource == 'branin':
             self.io_dims = [2, 1]
 
@@ -51,6 +53,12 @@ class DataGenerator():
                 self.input_range = np.repeat([self.input_range], [2], axis=0)
             if len(np.array(self.window_range).shape) == 1:
                 self.window_range = np.repeat([self.window_range], [2], axis=0)
+
+#            self.a = lambda : np.random.uniform()
+            
+#            self.get_task = lambda a=1, b=5.1/(4*np.pi**2), c=5/np.pi, r=6, s=10, t=1/(8*np.pi): \
+                    
+
 
             self.a = a = 1
             self.b = b = 5.1/(4*np.pi**2)
@@ -115,7 +123,36 @@ class DataGenerator():
 
         return [x_train, y_train], [x_test, y_test]
 
+    def generate_batch(self, batch_size=None, num_samples=None):
+        if batch_size is None:
+            batch_size = self.batch_size
+        if num_samples is None:
+            num_samples = self.num_samples
+
+#        xs = np.zeros((batch_size, num_samples, self.io_dims[0]))
+#        ys = np.zeros((batch_size, num_samples, self.io_dims[1]))
+
+        if self.task_limit != 0:
+            pass
+            i = np.random.randint(0, self.task_limit, batch_size)
+            x = self.xs[i]
+            y = self.ys[i]
+        else:
+            if self.datasource == 'gp1d':
+                xs = (self.input_range[1]-self.input_range[0]) * np.random.rand(batch_size, num_samples, self.io_dims[0]) + self.input_range[0]
+                ys = self.gp.sample_y(x).reshape(-1, 1)
+            elif self.datasource == 'branin':
+                x1s = (self.input_range[0][1]-self.input_range[0][0]) * np.random.rand(batch_size, num_samples, 1) + self.input_range[0][0]
+                x2s = (self.input_range[1][1]-self.input_range[1][0]) * np.random.rand(batch_size, num_samples, 1) + self.input_range[1][0]
+                ys = self.f(x1s, x2s) + np.random.randn(batch_size, num_samples, self.io_dims[1])
+                xs = np.concatenate((x1s, x2s), axis=1)
+
+        return xs, ys
+
     def generate_sample(self, num_samples=None):
+        xs, ys = self.generate_batch(1)
+        return xs[0], ys[0]
+
         if num_samples is None:
             num_samples = self.gen_num_samples
         if self.task_limit != 0:
@@ -156,18 +193,6 @@ class DataGenerator():
 #            return np.vstack([x1.ravel(), x2.ravel()])
 #            return np.concatenate(np.meshgrid(l, l), axis=0).reshape(-1, 2)
 
-    def generate_batch(self, batch_size=None, num_samples=None):
-        if batch_size is None:
-            batch_size = self.batch_size
-        if num_samples is None:
-            num_samples = self.num_samples
-
-        xs = np.zeros((batch_size, num_samples, self.io_dims[0]))
-        ys = np.zeros((batch_size, num_samples, self.io_dims[1]))
-        for i in range(batch_size):
-            xs[i], ys[i] = self.generate_sample(num_samples)
-
-        return xs, ys
 
     def make_fig_ax(self, fig):
         if sum(self.io_dims) == 2:
