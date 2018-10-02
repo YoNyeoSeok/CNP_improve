@@ -191,7 +191,8 @@ class DataGenerator():
 #            return np.array(zip(*(x.flat for x in np.meshgrid(l, l))))
 #            return np.vstack([x1.ravel(), x2.ravel()])
 #            return np.concatenate(np.meshgrid(l, l), axis=0).reshape(-1, 2)
-
+    def make_fig_title(self, fig, title="test"):
+        fig.title(title)
 
     def make_fig_ax(self, fig):
         if sum(self.io_dims) == 2:
