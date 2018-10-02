@@ -187,10 +187,13 @@ class DataGenerator():
             x = self.xs[i]
             y = self.ys[i]
         else:
-            if self.datasource == 'gp1d':
+            print(self.io_dims)
+            if self.io_dims is [1, 1]:
                 xs = (self.input_range[1]-self.input_range[0]) * np.random.rand(batch_size, num_samples, self.io_dims[0]) + self.input_range[0]
-                ys = np.array([self.gp.sample_y(x) for x in xs])
-            elif self.datasource == 'branin':
+                ys = self.f(xs)
+                #ys = np.array([self.gp.sample_y(x) for x in xs])
+            elif self.io_dims is [2, 1]:
+                #elif self.datasource == 'branin':
                 x1s = (self.input_range[0][1]-self.input_range[0][0]) * np.random.rand(batch_size, num_samples, 1) + self.input_range[0][0]
                 x2s = (self.input_range[1][1]-self.input_range[1][0]) * np.random.rand(batch_size, num_samples, 1) + self.input_range[1][0]
                 ys = self.f(x1s, x2s) + np.random.randn(batch_size, num_samples, self.io_dims[1])
@@ -200,25 +203,6 @@ class DataGenerator():
     def generate_sample(self, num_samples=None):
         xs, ys = self.generate_batch(1)
         return xs[0], ys[0]
-
-        if num_samples is None:
-            num_samples = self.gen_num_samples
-        if self.task_limit != 0:
-            pass
-            i = np.random.randint(self.task_limit)
-            x = self.xs[i]
-            y = self.ys[i]
-        else:
-            if self.datasource == 'gp1d':
-                x = (self.input_range[1]-self.input_range[0]) * np.random.rand(num_samples, self.io_dims[0]) + self.input_range[0]
-                y = self.gp.sample_y(x).reshape(-1, 1)
-            elif self.datasource == 'branin':
-                x1 = (self.input_range[0][1]-self.input_range[0][0]) * np.random.rand(num_samples, 1) + self.input_range[0][0]
-                x2 = (self.input_range[1][1]-self.input_range[1][0]) * np.random.rand(num_samples, 1) + self.input_range[1][0]
-                y = self.f(x1, x2) + np.random.randn(num_samples, self.io_dims[1])
-                x = np.concatenate((x1, x2), axis=1)
-
-        return x, y
     
     def generate_window_samples(self, window_range=None, step_size=None):
         if window_range is None:
@@ -299,12 +283,12 @@ class DataGenerator():
             ax.clabel(CS, inline=1, fontsize=10)
 
     def plot_gp(self, ax, train, data, c='c'):
-        if self.datasource == 'gp1d':
+        if self.io_dims is [1, 1]:
             train = train[self.window_crop(train[:,:1])]
             data = data[self.window_crop(data[:,:1])]
             self.gp.fit(train[:,:1], train[:,1:])
             ax.plot(data[:,:1], self.gp.predict(data[:,:1]), color=c)
-        elif self.datasource == 'branin':
+        elif self.io_dims is [2, 1]:
             #print('shape', train.shape, data.shape)
             train = train[self.window_crop(train[:,:2])]
             data = data[self.window_crop(data[:,:2])]
