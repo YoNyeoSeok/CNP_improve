@@ -80,10 +80,19 @@ class DataGenerator():
                     self.xs[i] = xs[i] = (input_range[1]-input_range[0]) * (np.random.rand(num_samples, self.io_dims[0]) - .5)
                     self.ys[i] = ys[i] = f(xs[i][0], xs[i][1])
 
-#        if len(np.array(self.input_range).shape) == 1:
-#            self.input_range = np.repeat([self.input_range], [self.io_dims[0]], axis=0)
-#        if len(np.array(self.window_range).shape) == 1:
-#            self.window_range = np.repeat([self.window_range], [self.io_dims[0]], axis=0)
+        if self.task_limit != 0 and 'gp' in datasource:
+            self.fs = [self.f]
+            for i in range(self.task_limit):
+                x = (self.input_range[1]-self.input_range[0]) * np.random.rand(self.gen_num_samples, self.io_dims[0]) + self.input_range[0]
+                y = self.gp.sample_y(x)
+                f = self.gp.fit(x, y)
+                self.fs += [lambda x: f.predict(x)]
+
+    def get_task_idx(self, task_limit=None):
+        if task_limit is None:
+            task_limit = self.task_limit
+
+        return np.random.randint(0 if task_limit is 0 else 1, task_limit+1)
 
     def get_train_test_batch(self, batch_size=None):
         if batch_size is None:
@@ -130,11 +139,21 @@ class DataGenerator():
         if num_samples is None:
             num_samples = self.gen_num_samples
 
+#        xs = np.zeros((batch_size, num_samples, self.io_dims[0]))
+#        ys = np.zeros((batch_size, num_samples, self.io_dims[1]))
+
+        xs = (self.input_range[1]-self.input_range[0]) * np.random.rand(batch_size, num_samples, self.io_dims[0]) + self.input_range[0]
+        idx = self.get_task_idx()
+        ys = self.fs[idx](xs) + np.random.randn(batch_size, num_samples, self.io_dims[1])
+
         if self.task_limit != 0:
-            pass
-            i = np.random.randint(0, self.task_limit, batch_size)
-            x = self.xs[i]
-            y = self.ys[i]
+            if 'gp' in args.datasource:
+                i = np.random.randint(0, self.task_limit, batch_size)
+                if self.io_dims == [1, 1]:
+                    xs = (self.input_range[1]-self.input_range[0]) * np.random.rand(batch_size, num_samples, self.io_dims[0]) + self.input_range[0]
+            elif self.io_dims == [2, 1]:
+                x = self.xs[i]
+                y = self.ys[i]
         else:
             if self.io_dims == [1, 1]:
                 xs = (self.input_range[1]-self.input_range[0]) * np.random.rand(batch_size, num_samples, self.io_dims[0]) + self.input_range[0]
