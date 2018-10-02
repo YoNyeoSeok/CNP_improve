@@ -55,7 +55,7 @@ class DataGenerator():
                 self.input_range = np.repeat([self.input_range], [2], axis=0)
             if len(np.array(self.window_range).shape) == 1:
                 self.window_range = np.repeat([self.window_range], [2], axis=0)
-            self.f = lambda x1, x2: self.gp.sample_y(x1.shape(-1, 1), x2.shape(-1, 1))
+            self.f = lambda x1, x2: self.gp.sample_y(np.concatenate((x1.reshape(-1, 1), x2.reshape(-1, 1)), axis=1)).reshape(x1.shape)
         elif datasource == 'branin':
             self.io_dims = [2, 1]
 
@@ -139,39 +139,6 @@ class DataGenerator():
         x_test_batch, y_test_batch = test_batch
         return [x_train_batch[0], y_train_batch[0]], [x_test_batch[0], y_test_batch[0]]
 
-        if x_y is None:
-            x, y = self.generate_sample()
-        else:
-            x, y = x_y
-
-        if self.disjoint_data:
-            if self.random_sample:
-                N = np.random.randint(self.num_samples_range[0], self.num_samples_range[1])
-                x_train = x[:N]
-                y_train = y[:N]
-                N = self.num_samples_range[1] + np.random.randint(self.num_samples_range[0], self.num_samples_range[1])
-                x_test = x[self.num_samples_range[1]:N]
-                y_test = y[self.num_samples_range[1]:N]
-            else:
-                x_train = x[:self.num_samples[0]]
-                y_train = y[:self.num_samples[0]]
-                x_test = x[self.num_samples[0]:]
-                y_test = y[self.num_samples[0]:]
-        else:
-            if self.random_sample:
-                N = np.random.randint(self.num_samples_range[0], self.num_samples_range[1])
-                x_train = x[:N]
-                y_train = y[:N]
-                x_test = x
-                y_test = y
-            else:
-                x_train = x[:self.num_samples[0]]
-                y_train = y[:self.num_samples[0]]
-                x_test = x[:self.num_samples[1]]
-                y_test = y[:self.num_samples[1]]
-
-        return [x_train, y_train], [x_test, y_test]
-
     def generate_batch(self, batch_size=None, num_samples=None):
         if batch_size is None:
             batch_size = self.batch_size
@@ -187,15 +154,15 @@ class DataGenerator():
             x = self.xs[i]
             y = self.ys[i]
         else:
-            print(self.io_dims)
-            if self.io_dims is [1, 1]:
+            if self.io_dims == [1, 1]:
                 xs = (self.input_range[1]-self.input_range[0]) * np.random.rand(batch_size, num_samples, self.io_dims[0]) + self.input_range[0]
-                ys = self.f(xs)
+                ys = self.f(xs) + np.random.randn(batch_size, num_samples, self.io_dims[1])
                 #ys = np.array([self.gp.sample_y(x) for x in xs])
-            elif self.io_dims is [2, 1]:
+            elif self.io_dims == [2, 1]:
                 #elif self.datasource == 'branin':
                 x1s = (self.input_range[0][1]-self.input_range[0][0]) * np.random.rand(batch_size, num_samples, 1) + self.input_range[0][0]
                 x2s = (self.input_range[1][1]-self.input_range[1][0]) * np.random.rand(batch_size, num_samples, 1) + self.input_range[1][0]
+                #ys = self.f(x1s, x2s) + np.random.randn(batch_size, num_samples, self.io_dims[1])
                 ys = self.f(x1s, x2s) + np.random.randn(batch_size, num_samples, self.io_dims[1])
                 xs = np.concatenate((x1s, x2s), axis=2)
         return xs, ys
