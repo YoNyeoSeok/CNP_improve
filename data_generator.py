@@ -231,12 +231,12 @@ class DataGenerator():
             ax.clabel(CS, inline=1, fontsize=10)
 
     def plot_gp(self, ax, train, data, c='c'):
-        if self.io_dims is [1, 1]:
+        if self.io_dims == [1, 1]:
             train = train[self.window_crop(train[:,:1])]
             data = data[self.window_crop(data[:,:1])]
             self.gp.fit(train[:,:1], train[:,1:])
             ax.plot(data[:,:1], self.gp.predict(data[:,:1]), color=c)
-        elif self.io_dims is [2, 1]:
+        elif self.io_dims == [2, 1]:
             #print('shape', train.shape, data.shape)
             train = train[self.window_crop(train[:,:2])]
             data = data[self.window_crop(data[:,:2])]
