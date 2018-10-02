@@ -44,8 +44,9 @@ parser.add_argument("--log", action='store_true',
         help="save loss, fig and model log")
 parser.add_argument("--log_folder", type=str, default="log",
         help="log folder name in logs/ (default: log)")
-parser.add_argument("--datasource", type=str, nargs='?', default="gp1d", choices=["gp1d", "branin"],
-        help="gp1d or branin")
+datasource_list = ["gp1d1d", "gp2d1d", "branin"]
+parser.add_argument("--datasource", type=str, nargs='?', default=datasource_list[0], choices=datasource_list,
+        help="datasource list: %s"%datasource_list)
 parser.add_argument("--fig_show", action='store_true',
         help="figure show during traing")
 parser.add_argument("--gpu", type=int, nargs='?', default=-1,
@@ -155,11 +156,12 @@ def main():
     
                 train_data = np.concatenate((x_train, y_train), axis=1)
                 window_data = np.concatenate((space_samples, predict_y_mu, predict_y_cov), axis=1)
-                #data_generator.scatter_data(ax, train_data, c='r')
-                #data_generator.plot_data(ax, window_data) 
+                data_generator.scatter_data(ax, train_data, c='r')
+                data_generator.plot_data(ax, window_data) 
                 #data_generator.scatter_data(ax, test_data, c='y')
                 #data_generator.contour_data(ax, window_data) 
-                #data_generator.plot_gp(ax, train_data, window_data)
+                if not args.test:
+                    data_generator.plot_gp(ax, train_data, window_data)
                 fig.canvas.draw()
 
             if args.log:

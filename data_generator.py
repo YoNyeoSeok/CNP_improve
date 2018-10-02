@@ -46,6 +46,16 @@ class DataGenerator():
 
 #        elif datasource == 'sinusoidal':
 
+        elif datasource == 'gp1d1d':
+            self.io_dims = [1, 1]
+            self.f = self.gp.sample_y
+        elif datasource == 'gp2d1d':
+            self.io_dims = [2, 1]
+            if len(np.array(self.input_range).shape) == 1:
+                self.input_range = np.repeat([self.input_range], [2], axis=0)
+            if len(np.array(self.window_range).shape) == 1:
+                self.window_range = np.repeat([self.window_range], [2], axis=0)
+            self.f = lambda x1, x2: self.gp.sample_y(x1.shape(-1, 1), x2.shape(-1, 1))
         elif datasource == 'branin':
             self.io_dims = [2, 1]
 
@@ -58,15 +68,23 @@ class DataGenerator():
             
 #            self.get_task = lambda a=1, b=5.1/(4*np.pi**2), c=5/np.pi, r=6, s=10, t=1/(8*np.pi): \
                     
-
-
-            self.a = a = 1
-            self.b = b = 5.1/(4*np.pi**2)
-            self.c = c = 5/np.pi
-            self.r = r = 6
-            self.s = s = 10
-            self.t = t = 1/(8*np.pi)
+            self.a = a = lambda : np.random.uniform(1, 2)
+            self.b = b = lambda : 5.1/(4*np.pi**2)
+            self.c = c = lambda : 5/np.pi
+            self.r = r = lambda : 6
+            self.s = s = lambda : 10
+            self.t = t = lambda : 1/(8*np.pi)
             self.f = f = lambda x1, x2: a*(x2-b*x1**2+c*x1-r) + s*(1-t)*np.cos(x1) + s#\
+
+
+
+#            self.a = a = 1
+#            self.b = b = 5.1/(4*np.pi**2)
+#            self.c = c = 5/np.pi
+#            self.r = r = 6
+#            self.s = s = 10
+#            self.t = t = 1/(8*np.pi)
+#            self.f = f = lambda x1, x2: a*(x2-b*x1**2+c*x1-r) + s*(1-t)*np.cos(x1) + s#\
                     #                                   if x.ndim > 2 else \
                     #                                   a*(x[:,1,None]-b*x[:,0,None]**2+c*x[:,0,None]-r) + s*(1-t)*np.cos(x[:,0,None]) + s 
 
