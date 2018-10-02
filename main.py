@@ -6,7 +6,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import pyplot as plt
 import numpy as np
 import torch
-import os
+import os, time
 
 from model import CNP_Net
 from data_generator import DataGenerator
@@ -57,6 +57,8 @@ parser.add_argument("--model_layers", nargs='?', default=None,
         help="model layers: default=None, means {'h':[8, 32, 128], 'g':[128, 64, 32, 16, 8]}")
 parser.add_argument("--test", action='store_true',
         help="test flag (not train)")
+parser.add_argument("--time", action='store_true',
+        help="time log flag")
 args = parser.parse_args()
 
 if args.gpu == -1:
@@ -67,6 +69,8 @@ else:
     use_cuda = True
 
 def main():
+    if args.time:
+        t = time.time()
     data_generator = DataGenerator(datasource=args.datasource, 
                                    batch_size=args.batch_size,
                                    random_sample=args.random_sample,
@@ -102,12 +106,20 @@ def main():
         ax = data_generator.make_fig_ax(fig)
         fig.canvas.draw()
 
+    if args.time:
+        print('preprocess', time.time()-t)
+        t = time.time()
+
     for t in range(args.max_epoch):
         loss = 0
-
+        
         train_batch, test_batch = data_generator.get_train_test_batch(args.batch_size)
         x_train_batch, y_train_batch = train_batch
         x_test_batch, y_test_batch = test_batch
+
+        if args.time:
+            print('data gen', time.time()-t)
+            t = time.time()
 
         batch_phi, batch_log_prob = zip(*map(lambda Ox, Oy, Tx, Ty:
             model(torch.cat((torch.tensor(Ox).to(device), torch.tensor(Oy).to(device)), 1),
@@ -116,10 +128,18 @@ def main():
 
         loss = -sum(batch_log_prob) / args.batch_size
         
+        if args.time:
+            print('compute loss', time.time()-t)
+            t = time.time()
+
         if not args.test:
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+
+        if args.time:
+            print('backprop', time.time()-t)
+            t = time.time()
 
         if args.log:
             with open("logs/%s/log.txt"%args.log_folder, "a") as log_file:
@@ -162,11 +182,16 @@ def main():
                 #data_generator.contour_data(ax, window_data) 
                 if not args.test:
                     data_generator.plot_gp(ax, train_data, window_data)
+
+                title = args.log_folder + "/step_" + str(t) + "/points_" + str(len(x_train))
+                data_generator.make_fig_title(fig, title)
                 fig.canvas.draw()
 
-            if args.log:
-                plt.savefig('logs/%s/%05d.png'%(args.log_folder, t))
-
+                if args.log:
+                    plt.savefig('logs/%s/%05d.png'%(args.log_folder, t))
+        if args.time:
+            print('log time', time.time()-t)
+            t = time.time()
     if args.log:
         torch.save(model, "logs/%s/%05d.pt"%(args.log_folder, args.max_epoch-1))
 if __name__ == '__main__':
