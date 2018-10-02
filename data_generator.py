@@ -54,13 +54,12 @@ class DataGenerator():
                 self.input_range = np.repeat([self.input_range], [2], axis=0)
             if len(np.array(self.window_range).shape) == 1:
                 self.window_range = np.repeat([self.window_range], [2], axis=0)
-            self.f = lambda x: self.gp.sample_y(x.reshape(-1, self.io_dims[0]).reshape((*x.shape[:-1], self.io_dims[1])) \
+            self.f = lambda x: self.gp.sample_y(x.reshape(-1, self.io_dims[0])).reshape((*x.shape[:-1], self.io_dims[1])) \
                     + noise*np.random.randn((*x.shape[:-1], self.io_dims[1]))
             #self.f = lambda x1, x2: self.gp.sample_y(np.concatenate(
             #    (x1.reshape(-1, 1), x2.reshape(-1, 1)), axis=1)).reshape(x1.shape) + noise*np.random.randn(*x1.shape)
 
-        else:
-            if datasource == 'branin':
+        elif datasource == 'branin':
             self.io_dims = [2, 1]
             if len(np.array(self.input_range).shape) == 1:
                 self.input_range = np.repeat([self.input_range], [2], axis=0)
@@ -73,16 +72,16 @@ class DataGenerator():
             self.r = r = 6
             self.s = s = 10
             self.t = t = 1/(8*np.pi)
-            #self.f = f = lambda x1, x2: a*(x2-b*x1**2+c*x1-r)**2 + s*(1-t)*np.cos(x1) + s + noise*np.random.randn(*x1.shape)
-            def fun(x):
-                if len(x)==2:
-                    x1,x2 = x
-                elif len(x.T)==2:
-                    x1,x2 = x
-                return a*(x2-b*x1**2+c*x1-r)**2 + s*(1-t)*np.cos(x1) + s + noise*np.random.randn(*x1.shape)
-            self.f = f = lambda x: a*(x2-b*x1**2+c*x1-r)**2 + s*(1-t)*np.cos(x1) + s + noise*np.random.randn(*x1.shape)
-            self.f = lambda x: self.gp.sample_y(x.reshape(-1, self.io_dims[0]).reshape((*x.shape[:-1], self.io_dims[1])) \
-                    + noise*np.random.randn((*x.shape[:-1], self.io_dims[1]))
+            self.f = f = lambda x1, x2: a*(x2-b*x1**2+c*x1-r)**2 + s*(1-t)*np.cos(x1) + s + noise*np.random.randn(*x1.shape)
+            #            def fun(x):
+            #                if len(x)==2:
+            #                    x1,x2 = x
+            #                elif len(x.T)==2:
+            #                    x1,x2 = x
+            #                return a*(x2-b*x1**2+c*x1-r)**2 + s*(1-t)*np.cos(x1) + s + noise*np.random.randn(*x1.shape)
+            #            self.f = f = lambda x: a*(x2-b*x1**2+c*x1-r)**2 + s*(1-t)*np.cos(x1) + s + noise*np.random.randn(*x1.shape)
+            #            self.f = lambda x: self.gp.sample_y(x.reshape(-1, self.io_dims[0]).reshape((*x.shape[:-1], self.io_dims[1])) \
+                    #                    + noise*np.random.randn((*x.shape[:-1], self.io_dims[1]))
 
             if task_limit != 0:
                 pass
@@ -154,9 +153,9 @@ class DataGenerator():
 #        xs = np.zeros((batch_size, num_samples, self.io_dims[0]))
 #        ys = np.zeros((batch_size, num_samples, self.io_dims[1]))
 
-        xs = (self.input_range[1]-self.input_range[0]) * np.random.rand(batch_size, num_samples, self.io_dims[0]) + self.input_range[0]
-        idx = self.get_task_idx()
-        ys = self.fs[idx](xs) + np.random.randn(batch_size, num_samples, self.io_dims[1])
+#        xs = (self.input_range[1]-self.input_range[0]) * np.random.rand(batch_size, num_samples, self.io_dims[0]) + self.input_range[0]
+#        idx = self.get_task_idx()
+#        ys = self.fs[idx](xs) + np.random.randn(batch_size, num_samples, self.io_dims[1])
 
         if self.task_limit != 0:
             if 'gp' in args.datasource:
