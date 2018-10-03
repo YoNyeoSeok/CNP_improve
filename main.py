@@ -182,6 +182,8 @@ def main():
                 #data_generator.contour_data(ax, window_data) 
                 if not args.test:
                     data_generator.plot_gp(ax, train_data, window_data)
+                else:
+                    data_generator.plot_task(ax, window_data, args.task_limit)
 
                 title = args.log_folder + "/step_" + str(t) + "/points_" + str(len(x_train))
                 data_generator.make_fig_title(fig, title)
