@@ -60,13 +60,6 @@ class DataGenerator():
             def f(x, param):
                 return gp.fit(*param).predict(x)
             self.f = f
-            def f_cov(x, param):
-                return gp.fit(*param).predict(x, return_cov=True)
-            self.f_cov = f_cov
-            #def f(x, param):
-            #    return gp.fit(x, param).predict(x)
-            #self.f = f
-            #self.f = lambda x, param: gp.fit(x, param).predict(x)
 
         elif datasource == 'branin':
             def gen_param():
@@ -105,98 +98,18 @@ class DataGenerator():
         #self.fn = lambda x, param: self.f(x, param) + noise*np.random.randn(*output_shape(x))
 
         # task
+        self.params = [(self.gen_param())]
         def fs(x):
-            self.param = param = self.gen_param()
-            return self.fn(x.reshape(*input_shape), param).reshape(*output_shape(x))
+            self.params[0] = (self.gen_param())
+            return self.fn(x.reshape(*input_shape), self.params[0]).reshape(*output_shape(x))
         self.fs = [fs]
         #self.fs = [lambda x: self.fn(x.reshape(*input_shape), self.gen_param()).reshape(*output_shape(x))]
 
         for i in range(self.task_limit):
-            param = self.gen_param()
-            self.fs += [lambda x: self.fn(x.reshape(*input_shape), param).reshape(*output_shape(x))]
-        self.fs = np.array(self.fs)
-        return
-    """
-
-        xs = np.random.rand(self.task_limit, self.gen_num_samples, self.io_dims[0])
-        xs = (self.input_range[:,1] - self.input_range[:,0])*x + self.input_range[:,0]
-        for i in range(self.task_limit):
-            f = lambda x: self.fs(x)
-            self.fs += [lambda x: f(x)]
+            self.params += [self.gen_param()]
+            self.fs += [lambda x: self.fn(x.reshape(*input_shape), self.params[i+1]).reshape(*output_shape(x))]
         self.fs = np.array(self.fs)
 
-        self.fs = [lambda x: self.f(x.reshape(*input_shape), self.gen_param())]
-        for i in range(self.task_limit):
-            params = self.gen_param()
-            f = lambda x: self.f(x.reshape(*input_shape), param).reshape(*output_shape(x))
-
-            f = fs(x)
-            self.fs += [lambda x: f(x.reshape(*input_shape)).reshape(*output_shape(x)) \
-                    + noise*np.random.randn(*output_shape(x))]
-            self.fs = np.array(self.fs)
-        return
-
-#            y = self.f(x)
-#            self.fs += [lambda x: self._f(x, y) + noise*np.random.randn((*x.shape[:-1], self.io_dims[1]))]
-
-
-        if datasource == 'gp1d':
-            self.io_dims = [1, 1]
-            #y_mu, y_cov = gp.predict(x_plot, return_cov=True)
-
-            if task_limit != 0:
-                pass
-                self.xs = xs = np.zeros((task_limit, self.gen_num_samples, self.io_dims[0]))
-                self.ys = ys = np.zeros((task_limit, self.gen_num_samples, self.io_dims[1]))
-                for i in range(self.task_limit):
-                    self.xs[i] = xs[i] = (input_range[1]-input_range[0]) * (np.random.rand(num_samples, self.io_dims[0]) - .5)
-                    self.ys[i] = ys[i] = self.gp().sample_y(xs[i])
-
-#        elif datasource == 'sinusoidal':
-        elif datasource == 'gp1d1d':
-            self.io_dims = [1, 1]
-            
-            for i in range(self.task_limit):
-                y = self.gp.sample_y(x)
-                f = self.gp.fit(x, y).predict
-                self.fs += [lambda x: f(x.reshape(*input_shape)).reshape(*output_shape(x)) \
-                        + noise*np.random.randn(*output_shape(x))]
-                #self.fs += [lambda x: f.predict(x) + noise*np.random.randn()]
-            self.fs = np.array(self.fs)
-
-        elif datasource == 'branin':
-            self.io_dims = [2, 1]
-            if len(np.array(self.input_range).shape) == 1:
-                self.input_range = np.repeat([self.input_range], [2], axis=0)
-            if len(np.array(self.window_range).shape) == 1:
-                self.window_range = np.repeat([self.window_range], [2], axis=0)
-
-            self.a = a = 1
-            self.b = b = 5.1/(4*np.pi**2)
-            self.c = c = 5/np.pi
-            self.r = r = 6
-            self.s = s = 10
-            self.t = t = 1/(8*np.pi)
-            self.f = f = lambda x1, x2: a*(x2-b*x1**2+c*x1-r)**2 + s*(1-t)*np.cos(x1) + s + noise*np.random.randn(*x1.shape)
-            #            def fun(x):
-            #                if len(x)==2:
-            #                    x1,x2 = x
-            #                elif len(x.T)==2:
-            #                    x1,x2 = x
-            #                return a*(x2-b*x1**2+c*x1-r)**2 + s*(1-t)*np.cos(x1) + s + noise*np.random.randn(*x1.shape)
-            #            self.f = f = lambda x: a*(x2-b*x1**2+c*x1-r)**2 + s*(1-t)*np.cos(x1) + s + noise*np.random.randn(*x1.shape)
-            #            self.f = lambda x: self.gp.sample_y(x.reshape(-1, self.io_dims[0]).reshape((*x.shape[:-1], self.io_dims[1])) \
-                    #                    + noise*np.random.randn((*x.shape[:-1], self.io_dims[1]))
-
-            if task_limit != 0:
-                pass
-                self.xs = xs = np.zeros((task_limit, self.gen_num_samples, self.io_dims[0]))
-                self.ys = ys = np.zeros((task_limit, self.gen_num_samples, self.io_dims[1]))
-                for i in range(self.task_limit):
-                    self.xs[i] = xs[i] = (input_range[1]-input_range[0]) * (np.random.rand(num_samples, self.io_dims[0]) - .5)
-                    self.ys[i] = ys[i] = f(xs[i][0], xs[i][1])
-
-    """
     def get_task_batch(self, batch_size = None, task_limit = None):
         if batch_size is None:
             batch_size = self.batch_size
@@ -253,47 +166,12 @@ class DataGenerator():
             batch_size = self.batch_size
         if num_samples is None:
             num_samples = self.gen_num_samples
-
-#        xs = np.zeros((batch_size, num_samples, self.io_dims[0]))
-#        ys = np.zeros((batch_size, num_samples, self.io_dims[1]))
         
         xs = (self.input_range[:,1]-self.input_range[:,0]) * np.random.rand(batch_size, num_samples, self.io_dims[0]) + self.input_range[:,0]
         tasks = self.get_task_batch(batch_size)
         ys = map(lambda x, task: self.fs[task](x), xs, tasks)
-        #if self.task_limit == 0 and 'gp' in datasource:
-        #    ys = map(self.fs[tasks], xs)
-        #    self.f = self.gp.fit(x, y)
-        #print(xs.shape)
-        #print(np.array(list(ys)).shape)
-        #print(xs[0])
+
         return xs, ys, tasks
-
-
-
-        if self.task_limit != 0:
-            if 'gp' in args.datasource:
-                i = np.random.randint(0, self.task_limit, batch_size)
-                if self.io_dims == [1, 1]:
-                    xs = (self.input_range[1]-self.input_range[0]) * np.random.rand(batch_size, num_samples, self.io_dims[0]) + self.input_range[0]
-            elif self.io_dims == [2, 1]:
-                x = self.xs[i]
-                y = self.ys[i]
-        else:
-            if self.io_dims == [1, 1]:
-                xs = (self.input_range[1]-self.input_range[0]) * np.random.rand(batch_size, num_samples, self.io_dims[0]) + self.input_range[0]
-                ys = map(self.f, xs)
-                #ys = self.f(xs) + np.random.randn(batch_size, num_samples, self.io_dims[1])
-                #ys = np.array([self.gp.sample_y(x) for x in xs])
-            elif self.io_dims == [2, 1]:
-                #elif self.datasource == 'branin':
-                x1s = (self.input_range[0][1]-self.input_range[0][0]) * np.random.rand(batch_size, num_samples, 1) + self.input_range[0][0]
-                x2s = (self.input_range[1][1]-self.input_range[1][0]) * np.random.rand(batch_size, num_samples, 1) + self.input_range[1][0]
-                #ys = self.f(x1s, x2s) + np.random.randn(batch_size, num_samples, self.io_dims[1])
-                ys = map(self.f, x1s, x2s)
-                xs = np.concatenate((x1s, x2s), axis=2)
-#        print(len(list(xs)))
-#        print(len(list(ys)))
-        return xs, ys
 
     def generate_sample(self, num_samples=None):
         xs, ys = self.generate_batch(1)
@@ -414,36 +292,10 @@ class DataGenerator():
             data = data[self.window_crop(data[:,:2])]
             ax.plot_trisurf(data[:,0], data[:,1], gp.predict(data[:,:2])[:,0], color=c)
 
-    def plot_gp_(self, ax, train, data, c='c'):
-        if self.io_dims == [1, 1]:
-            train = train[self.window_crop(train[:,:1])]
-            data = data[self.window_crop(data[:,:1])]
-            self.gp.fit(train[:,:1], train[:,1:])
-            ax.plot(data[:,:1], self.gp.predict(data[:,:1]), color=c)
-        elif self.io_dims == [2, 1]:
-            #print('shape', train.shape, data.shape)
-            train = train[self.window_crop(train[:,:2])]
-            data = data[self.window_crop(data[:,:2])]
-            #print('shape2', train.shape, data.shape)
-            #print('data', train, data)
-            #train[:,2:] = self.gp.sample_y(train[:,:2])
-            self.gp.fit(train[:,:2], train[:,2:])       ### need sort
-            #print(train[:,:2].shape, train[:,2:].shape)
-            #print(data)
-            #print(data[:,:1])
-            #print(data[:,1:2])
-            #print(self.gp.predict(data[:,:2]))
-            #ax.plot_trisurf(train[:,0], train[:,1], self.gp.predict(train[:,:2])[:,0], color='k')
-            #ax.plot_trisurf(train[:,0], train[:,1], self.f(train[:,:1], train[:,1:2]).reshape(-1,), color='k')
-            ax.plot_trisurf(data[:,0], data[:,1], self.gp.predict(data[:,:2])[:,0], color=c)
-
     def plot_task(self, ax, data, task=0, c='c'):
         data = data[self.window_crop(data[:,:self.io_dims[0]])]
         if 'gp' in self.datasource:
-            if task == 0:
-                target = self.f(data, self.param)
-            else:
-                target = self.fs[task](data)
+            target = self.f(data, self.params[task])
             data = np.concatenate((data, target), axis=1)
             self.plot_data(ax, data, c=c)
         elif self.datasource == 'branin':
