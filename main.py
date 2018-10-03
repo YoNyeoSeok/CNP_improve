@@ -113,7 +113,7 @@ def main():
     for t in range(args.max_epoch):
         loss = 0
         
-        train_batch, test_batch = data_generator.get_train_test_batch(args.batch_size)
+        train_batch, test_batch, _ = data_generator.get_train_test_batch(args.batch_size)
         x_train_batch, y_train_batch = train_batch
         x_test_batch, y_test_batch = test_batch
 
@@ -158,7 +158,7 @@ def main():
                     window_range += np.random.randint(args.input_range[0]-window_range[0], args.input_range[1]-window_range[1])
                     space_samples = data_generator.generate_window_samples(window_range, args.window_step_size)
 
-                train, test = data_generator.get_train_test_sample()
+                train, test, task = data_generator.get_train_test_sample()
                 x_train, y_train = train
                 x_test, y_test = test
 
@@ -181,11 +181,15 @@ def main():
                 #data_generator.scatter_data(ax, test_data, c='y')
                 #data_generator.contour_data(ax, window_data) 
                 if not args.test:
-                    data_generator.plot_gp(ax, train_data, window_data)
+                    #gp = data_generator.gp().fit(train_data[:data_generator.io_dims[0], data_generator.io_dims[0]:])
+                    gp = data_generator.gp().fit(x_train, y_train)
+                    data_generator.plot_gp(ax, gp, space_samples)
                 else:
-                    data_generator.plot_task(ax, window_data, args.task_limit)
+                    data_generator.plot_task(ax, space_samples, args.task_limit)
 
                 title = args.log_folder + "/step_" + str(t) + "/points_" + str(len(x_train))
+                if args.task_limit != 0:
+                    title += "/task_" + str(task)
                 data_generator.make_fig_title(fig, title)
                 fig.canvas.draw()
 

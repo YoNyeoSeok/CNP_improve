@@ -20,12 +20,19 @@ contour_data	data_generator.py	/^    def contour_data(self, ax, data, c1='k', c2
 datasource_list	main.py	/^datasource_list = ["gp1d1d", "gp2d1d", "branin"]$/;"	v
 device	main.py	/^    device = torch.device("cpu")$/;"	v
 device	main.py	/^    device = torch.device("cuda:"+str(args.gpu))$/;"	v
+f	data_generator.py	/^            def f(x, param):$/;"	f	function:DataGenerator.__init__
+f_cov	data_generator.py	/^            def f_cov(x, param):$/;"	f	function:DataGenerator.__init__
+fn	data_generator.py	/^        def fn(x, param):$/;"	f	function:DataGenerator.__init__
 forward	model.py	/^    def forward(self, O, T):$/;"	m	class:CNP_Net
 forward	model.py	/^    def forward(self, x):$/;"	m	class:Net_g
 forward	model.py	/^    def forward(self, x):$/;"	m	class:Net_h
+fs	data_generator.py	/^        def fs(x):$/;"	f	function:DataGenerator.__init__
+gen_param	data_generator.py	/^            def gen_param():$/;"	f	function:DataGenerator.__init__
 generate_batch	data_generator.py	/^    def generate_batch(self, batch_size=None, num_samples=None):$/;"	m	class:DataGenerator
 generate_sample	data_generator.py	/^    def generate_sample(self, num_samples=None):$/;"	m	class:DataGenerator
 generate_window_samples	data_generator.py	/^    def generate_window_samples(self, window_range=None, step_size=None):$/;"	m	class:DataGenerator
+get_task_batch	data_generator.py	/^    def get_task_batch(self, batch_size = None, task_limit = None):$/;"	m	class:DataGenerator
+get_task_idx	data_generator.py	/^    def get_task_idx(self, task_limit=None):$/;"	m	class:DataGenerator
 get_train_test_batch	data_generator.py	/^    def get_train_test_batch(self, batch_size=None):$/;"	m	class:DataGenerator
 get_train_test_sample	data_generator.py	/^    def get_train_test_sample(self, x_y=None):$/;"	m	class:DataGenerator
 help	main.py	/^        help="datasource list: %s"%datasource_list)$/;"	v
@@ -35,6 +42,7 @@ help	main.py	/^        help="load model. format: folder\/iteration")$/;"	v
 help	main.py	/^        help="log folder name in logs\/ (default: log)")$/;"	v
 help	main.py	/^        help="save loss, fig and model log")$/;"	v
 help	main.py	/^        help="test flag (not train)")$/;"	v
+help	main.py	/^        help="time log flag")$/;"	v
 help	main.py	/^        help="use gpu")$/;"	v
 help	main.py	/^        help='batch size (default: 32)')$/;"	v
 help	main.py	/^        help='function input range (default: [-2, 2])')$/;"	v
@@ -55,9 +63,12 @@ model	show_model.py	/^model = torch.load(args.load_model)$/;"	v
 parser	main.py	/^parser = argparse.ArgumentParser()$/;"	v
 parser	show_model.py	/^parser = argparse.ArgumentParser()$/;"	v
 plot_branin	data_generator.py	/^    def plot_branin(self, ax, data, c='c'):$/;"	m	class:DataGenerator
-plot_data	data_generator.py	/^    def plot_data(self, ax, data, c1='k', c2='gray', window_crop=False):$/;"	m	class:DataGenerator
+plot_cov	data_generator.py	/^    def plot_cov(self, ax, data, c='gray'):$/;"	m	class:DataGenerator
+plot_data	data_generator.py	/^    def plot_data(self, ax, data, c='k'):$/;"	m	class:DataGenerator
 plot_fill_xy	utils/figure.py	/^    def plot_fill_xy(self, x, y_mu, y_cov, color_l='k', color_f='k',$/;"	m	class:Figure
-plot_gp	data_generator.py	/^    def plot_gp(self, ax, train, data, c='c'):$/;"	m	class:DataGenerator
+plot_gp	data_generator.py	/^    def plot_gp(self, ax, gp, data, c='c'):$/;"	m	class:DataGenerator
+plot_gp_	data_generator.py	/^    def plot_gp_(self, ax, train, data, c='c'):$/;"	m	class:DataGenerator
+plot_task	data_generator.py	/^    def plot_task(self, ax, data, task=0, c='c'):$/;"	m	class:DataGenerator
 plot_xy	utils/figure.py	/^    def plot_xy(self, x, y, color='k'):$/;"	m	class:Figure
 scatter_data	data_generator.py	/^    def scatter_data(self, ax, data, c='k'):$/;"	m	class:DataGenerator
 scatter_xy	utils/figure.py	/^    def scatter_xy(self, x, y, color='k'):$/;"	m	class:Figure
