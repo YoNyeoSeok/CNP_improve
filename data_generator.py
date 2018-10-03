@@ -27,10 +27,31 @@ class DataGenerator():
         else:
             self.gen_num_samples = max(self.num_samples) if not self.random_sample else self.num_samples_range[1]
 
-        noise = 1
-#        length_scale = 1 
-#        kernel = RBF(length_scale=length_scale)+WhiteKernel(noise_level=noise**2)
-        self.gp = gp = GaussianProcessRegressor()#kernel=kernel)#, optimizer=None)
+        noise = .1
+        length_scale = 1 
+        kernel = RBF(length_scale=length_scale)+WhiteKernel(noise_level=noise**2)
+        self.gp = gp = GaussianProcessRegressor(kernel=kernel)#, optimizer=None)
+
+        if 'gp' in datasource:
+            if '1d1d' in datasource:
+                self.io_dims = [1, 1]
+            elif '2d1d' in datasource:
+                self.io_dims = [2, 1]
+
+            if len(np.array(self.input_range).shape) == 1:
+                self.input_range = np.repeat([self.input_range], [self.io_dims[0]], axis=0)
+            if len(np.array(self.window_range).shape) == 1:
+                self.window_range = np.repeat([self.window_range], [self.io_dims[0]], axis=0)
+
+            self.fs = [gp.sample_y]
+            for i in range(args.task_limit):
+                x = np.random.rand(self.gen_num_samples, self.io_dims[0])
+                x = (self.input_range[:,1] - self.input_range[:,0])*x + self.input_range[:,0]
+
+                y = gp.sample_y(x)
+                f = gp.fit(x, y)
+                self.fs += [lambda x: gp.predict(x) + noise*np.random.randn((*x.shape[:-1], self.io_dims[1]))]
+
 
         if datasource == 'gp1d':
             self.io_dims = [1, 1]
