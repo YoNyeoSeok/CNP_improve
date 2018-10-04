@@ -82,8 +82,8 @@ def main():
                                    window_step_size=args.window_step_size,
                                    random_window_position=args.random_window_position,
                                    task_limit=args.task_limit)
-    if args.log:
-        data_generator.save_task(args.log_folder)
+    #    if args.log:
+    #    data_generator.save_task(args.log_folder)
 
     if not args.random_window_position:
         space_samples = data_generator.generate_window_samples(args.window_range, args.window_step_size)
