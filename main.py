@@ -42,8 +42,8 @@ parser.add_argument("--random_window_position", action='store_true',
         help='plot window position by random in input range (default: false)')
 parser.add_argument("--log", action='store_true',
         help="save loss, fig and model log")
-parser.add_argument("--log_folder", type=str, default="log",
-        help="log folder name in logs/ (default: log)")
+parser.add_argument("--log_folder", type=str, default="log/",
+        help="log folder name in logs/ (default: log/)")
 datasource_list = ["gp1d1d", "gp2d1d", "branin"]
 parser.add_argument("--datasource", type=str, nargs='?', default=datasource_list[0], choices=datasource_list,
         help="datasource list: %s"%datasource_list)
@@ -52,14 +52,17 @@ parser.add_argument("--fig_show", action='store_true',
 parser.add_argument("--gpu", type=int, nargs='?', default=-1,
         help="use gpu")
 parser.add_argument("--load_model", type=str,
-        help="load model. format: folder/iteration")
+        help="load model. format: log_folder/iteration")
 parser.add_argument("--model_layers", nargs='?', default=None,
         help="model layers: default=None, means {'h':[8, 32, 128], 'g':[128, 64, 32, 16, 8]}")
 parser.add_argument("--test", action='store_true',
         help="test flag (not train)")
 parser.add_argument("--time", action='store_true',
         help="time log flag")
+parser.add_argument("--load_task", action='store_true',
+        help="load task from log_folder")
 args = parser.parse_args()
+args.log_folder = "logs/"+args.log_folder
 
 if args.gpu == -1:
     device = torch.device("cpu")
@@ -81,12 +84,14 @@ def main():
                                    window_range=args.window_range,
                                    window_step_size=args.window_step_size,
                                    random_window_position=args.random_window_position,
-                                   task_limit=args.task_limit)
+                                   task_limit=args.task_limit,
+                                   log_folder=args.log_folder,
+                                   load_task=args.load_task)
     #    if args.log:
     #    data_generator.save_task(args.log_folder)
 
     if args.load_model is not None:
-        model = torch.load(args.load_model)
+        model = torch.load(args.log_folder + args.load_model)
     elif args.model_layers is not None:
         model = CNP_Net(io_dims=data_generator.io_dims, 
                         layers_dim={'h':[8, 32, 128], 
@@ -141,13 +146,13 @@ def main():
             t = time.time()
 
         if args.log:
-            with open("logs/%s/log.txt"%args.log_folder, "a") as log_file:
+            with open(args.log_folder + "log.txt", "w") as log_file:
                 log_file.write("%5d\t%10.4f\n"%(t, loss.item()))
         
         if t % args.interval == 0:
             print('%5d'%t, '%10.4f'%loss.item())
             if args.log:
-                torch.save(model, "logs/%s/%05d.pt"%(args.log_folder, t))
+                torch.save(model,args.log_folder + "%05d.pt"%(t))
             if args.fig_show:
                 #                if args.random_window_position:
 #                    window_range = args.window_range - np.mean(args.window_range)
@@ -189,7 +194,7 @@ def main():
                     gp = data_generator.gp().fit(x_train, y_train)
                     data_generator.plot_gp(ax, gp, window_samples)
                 else:
-                    data_generator.plot_task(ax, window_samples, args.task_limit)
+                    data_generator.plot_task(ax, window_samples, task)
 
                 title = args.log_folder + "/step_" + str(t) + "/points_" + str(len(x_train))
                 if args.task_limit != 0:
@@ -198,12 +203,13 @@ def main():
                 fig.canvas.draw()
 
                 if args.log:
-                    plt.savefig('logs/%s/%05d.png'%(args.log_folder, t))
+                    plt.savefig(args.log_folder + '%05d.png'%t)
         if args.time:
             print('log time', time.time()-t)
             t = time.time()
     if args.log:
-        torch.save(model, "logs/%s/%05d.pt"%(args.log_folder, args.max_epoch-1))
+        torch.save(model, args.log_folder + "%05d.pt"%(args.max_epoch-1))
+
 if __name__ == '__main__':
     main()
 
