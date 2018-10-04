@@ -109,7 +109,6 @@ class DataGenerator():
         length_scale = 1 
         kernel = RBF(length_scale=length_scale)+WhiteKernel(noise_level=noise**2)
         self.gp = lambda: GaussianProcessRegressor(kernel=kernel)#, optimizer=None)
-        gp = self.gp()
 
         if 'gp' in datasource:
             if '1d1d' in datasource:
