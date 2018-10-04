@@ -68,7 +68,7 @@ class DataGenerator():
                     a, b, c, r, s, t = 1, 5.1/(4*np.pi**2), 5/np.pi, 6, 10, 1/(8*np.pi)
                 except AttributeError:
                     gen_param.first_call = True
-                    a, b, c, r, s, t = 1, 5.1/(4*np.pi**2), 5/np.pi, 6, np.random.uniform(5, 15), 1/(8*np.pi)
+                    a, b, c, r, s, t = 1, 5.1/(4*np.pi**2), 5/np.pi, 6, 100*np.random.randint(5, 15), 1/(8*np.pi)
                 return (a, b, c, r, s, t)
             self.gen_param = gen_param
 
