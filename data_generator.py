@@ -63,7 +63,12 @@ class DataGenerator():
 
         elif datasource == 'branin':
             def gen_param():
-                a, b, c, r, s, t = 1, 5.1/(4*np.pi**2), 5/np.pi, 6, 10, 1/(8*np.pi)
+                try:
+                    gen_param.first_call
+                    a, b, c, r, s, t = 1, 5.1/(4*np.pi**2), 5/np.pi, 6, 10, 1/(8*np.pi)
+                except AttributeError:
+                    gen_param.first_call = True
+                    a, b, c, r, s, t = 1, 5.1/(4*np.pi**2), 5/np.pi, 6, np.random.uniform(5, 15), 1/(8*np.pi)
                 return (a, b, c, r, s, t)
             self.gen_param = gen_param
 
@@ -112,7 +117,6 @@ class DataGenerator():
 
     def save_task(self, fname=""):
         self.save_task_params(fname)
-        self.fs[1:] = 
         pass
 
     def load_task(self, fname=""):
