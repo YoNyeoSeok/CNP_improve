@@ -167,6 +167,35 @@ class DataGenerator():
             self.fs += [lambda x: self.fn(x.reshape(*input_shape), self.params[i+1]).reshape(*output_shape(x))]
         self.fs = np.array(self.fs)
 
+        elif datasource == 'branin':
+            def gen_param():
+                try:
+                    gen_param.first_call
+                    a, b, c, r, s, t = 1, 5.1/(4*np.pi**2), 5/np.pi, 6, 10, 1/(8*np.pi)
+                except AttributeError:
+                    gen_param.first_call = True
+                    a, b, c, r, s, t = 1, 5.1/(4*np.pi**2), 5/np.pi, 6, 100*np.random.randint(5, 15), 1/(8*np.pi)
+                return (a, b, c, r, s, t)
+            self.gen_param = gen_param
+
+            def f(x, param):
+                a, b, c, r, s, t = param
+                x1, x2 = list(x.T)
+                return a*(x2-b*x1**2+c*x1-r)**2 + s*(1-t)*np.cos(x1) + s
+            self.f = f
+#            a = 1
+#            self.b = b = 5.1/(4*np.pi**2)
+#            self.c = c = 5/np.pi
+#            self.r = r = 6
+#            self.s = s = 10
+#            self.t = t = 1/(8*np.pi)
+            #self.f = f = lambda x1, x2: a*(x2-b*x1**2+c*x1-r)**2 + s*(1-t)*np.cos(x1) + s + noise*np.random.randn(*x1.shape)
+
+
+        #self.fs = [lambda x: self.f(x.reshape(*input_shape), self.f_param(x)).reshape(*output_shape(x)) \
+        #        + noise*np.random.randn(*output_shape(x))]
+        #self.fs = [lambda x: self.f(x.reshape(*input_shape)).reshape(*output_shape(x)) \
+        #        + noise*np.random.randn(*output_shape(x))]
         # batch input, output
         def fb(x, param):
             return self.f(x.reshape(*input_shape), param).reshape(*output_shape(x))
