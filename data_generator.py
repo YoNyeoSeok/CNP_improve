@@ -148,10 +148,9 @@ class DataGenerator():
             return self.fbn((lambda x: self.task.f_(x, self.params[0])), xs)
         self.fs = [fs]
 
-        for i in range(self.task_limit):
-            task = copy(task)
-            self.params += task.gen_param(seed=i)
-            self.fs += lambda x: self.fn(task.f_(x, self.params[i+1]))
+        for i in range(1, self.task_limit+1):
+            self.params[i] = (self.task.gen_param(seed=i))
+            self.fs += [lambda xs: self.fbn((lambda x: self.task.f_(x, self.params[i])), xs)]
 
         self.fs = np.array(self.fs)
         """ 
