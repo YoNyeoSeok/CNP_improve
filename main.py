@@ -85,9 +85,6 @@ def main():
     #    if args.log:
     #    data_generator.save_task(args.log_folder)
 
-    if not args.random_window_position:
-        space_samples = data_generator.generate_window_samples(args.window_range, args.window_step_size)
-
     if args.load_model is not None:
         model = torch.load(args.load_model)
     elif args.model_layers is not None:
@@ -152,20 +149,25 @@ def main():
             if args.log:
                 torch.save(model, "logs/%s/%05d.pt"%(args.log_folder, t))
             if args.fig_show:
+                #                if args.random_window_position:
+#                    window_range = args.window_range - np.mean(args.window_range)
+#                    window_range += np.random.randint(args.input_range[0]-window_range[0], args.input_range[1]-window_range[1])
+#                    space_samples = data_generator.generate_window_samples(window_range, args.window_step_size)
+#                else 
+#                    space_samples = data_generator.generate_window_samples()
+                
+                # version: not support random window position
+                window_samples = data_generator.generate_window_samples(random=args.random_window_position)
+
                 plt.clf()
                 ax = data_generator.make_fig_ax(fig)
-            
-                if args.random_window_position:
-                    window_range = args.window_range - np.mean(args.window_range)
-                    window_range += np.random.randint(args.input_range[0]-window_range[0], args.input_range[1]-window_range[1])
-                    space_samples = data_generator.generate_window_samples(window_range, args.window_step_size)
 
                 train, test, task = data_generator.get_train_test_sample()
                 x_train, y_train = train
                 x_test, y_test = test
 
                 Ox, Oy = x_train, y_train
-                Tx, Ty = space_samples, np.zeros((len(space_samples), data_generator.io_dims[1]))
+                Tx, Ty = window_samples, np.zeros((len(window_samples), data_generator.io_dims[1]))
 
                 phi, _ = model(torch.cat((torch.tensor(Ox).to(device), torch.tensor(Oy).to(device)), 1),
                     torch.cat((torch.tensor(Tx).to(device), torch.tensor(Ty).to(device)), 1))
@@ -177,7 +179,7 @@ def main():
                 predict_y_cov = phi[:,data_generator.io_dims[1]:].data.numpy()**2
     
                 train_data = np.concatenate((x_train, y_train), axis=1)
-                window_data = np.concatenate((space_samples, predict_y_mu, predict_y_cov), axis=1)
+                window_data = np.concatenate((window_samples, predict_y_mu, predict_y_cov), axis=1)
                 data_generator.scatter_data(ax, train_data, c='r')
                 data_generator.plot_data(ax, window_data) 
                 #data_generator.scatter_data(ax, test_data, c='y')
@@ -185,9 +187,9 @@ def main():
                 if not args.test:
                     #gp = data_generator.gp().fit(train_data[:data_generator.io_dims[0], data_generator.io_dims[0]:])
                     gp = data_generator.gp().fit(x_train, y_train)
-                    data_generator.plot_gp(ax, gp, space_samples)
+                    data_generator.plot_gp(ax, gp, window_samples)
                 else:
-                    data_generator.plot_task(ax, space_samples, args.task_limit)
+                    data_generator.plot_task(ax, window_samples, args.task_limit)
 
                 title = args.log_folder + "/step_" + str(t) + "/points_" + str(len(x_train))
                 if args.task_limit != 0:
