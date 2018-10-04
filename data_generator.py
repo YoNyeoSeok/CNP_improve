@@ -168,7 +168,7 @@ class DataGenerator():
         self.fs = [fs]
         self.fs += list(map(lambda param: (lambda xs: self.fbn((lambda x: self.task.f_(x, param)), xs)), self.params[1:]))
         self.fs = np.array(self.fs)
-
+        """
         for i in range(self.task_limit):
             self.params += [self.gen_param()]
             self.fs += [lambda x: self.fn(x.reshape(*input_shape), self.params[i+1]).reshape(*output_shape(x))]
