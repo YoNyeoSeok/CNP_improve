@@ -17,6 +17,11 @@ class Dist():
         pass
     def f(self, x):
         pass
+    def save_task(self, fname):
+        np.save(fname, self.param)
+    def load_task(self, fname):
+        self.param = np.load(fname)
+        return self.param
 
 class GP():
     def __init__(self, io_dims, input_range, gen_num_samples):
@@ -24,10 +29,10 @@ class GP():
         self.input_range = input_range
         self.gen_num_samples = gen_num_samples
 
-        noise = .1
-        length_scale = 1 
-        kernel = RBF(length_scale=length_scale)+WhiteKernel(noise_level=noise**2)
-        self.gp = lambda : GaussianProcessRegressor(kernel=kernel)#, optimizer=None)
+#        noise = .1
+#        length_scale = 1 
+#        kernel = RBF(length_scale=length_scale)+WhiteKernel(noise_level=noise**2)
+        self.gp = lambda : GaussianProcessRegressor()#, optimizer=None)
 
         self.param = self.gen_param()
 
@@ -44,9 +49,10 @@ class GP():
         return self.f_(x, self.param)
     
     def save_task(self, fname):
-        self.param = np.save(self.param, fname)
+        np.save(fname, self.param)
     def load_task(self, fname):
         self.param = np.load(fname)
+        return self.param
 
 class BRANIN():
     def __init__(self, io_dims, input_range, gen_num_samples):
@@ -59,7 +65,7 @@ class BRANIN():
         if seed == 0:
             a, b, c, r, s, t = 1, 5.1/(4*np.pi**2), 5/np.pi, 6, 10, 1/(8*np.pi)
         else:
-            a, b, c, r, s, t = 1, 5.1/(4*np.pi**2), 5/np.pi, 6, 100*seed, 1/(8*np.pi)
+            a, b, c, r, s, t = 1, 5.1/(4*np.pi**2), 5/np.pi, 6, 100*(seed-1)+10, 1/(8*np.pi)
         return (a, b, c, r, s, t)
 
     def f_(self, x, param):
@@ -69,11 +75,14 @@ class BRANIN():
 
     def f(self, x):
         return self.f_(x, self.param)
-         
     def save_task(self, fname):
-        self.param = np.save(self.param, fname)
+        np.save(fname, self.param)
+        test = np.load(fname)
+
     def load_task(self, fname):
         self.param = np.load(fname)
+        return self.param
+    
 #    self.f = f
 #    a = 1
 #    self.b = b = 5.1/(4*np.pi**2)
@@ -87,7 +96,7 @@ class DataGenerator():
     def __init__(self, datasource, batch_size, \
             random_sample, disjoint_data, num_samples, num_samples_range, \
             input_range, window_range, window_step_size, random_window_position,
-            task_limit, **kwags):
+            task_limit, log_folder, load_task, **kwags):
         self.datasource = datasource
         self.batch_size = batch_size
         self.random_sample = random_sample
@@ -99,16 +108,21 @@ class DataGenerator():
         self.window_step_size = window_step_size
         self.random_window_positino = random_window_position
         self.task_limit = task_limit
- 
+        self.log_folder = log_folder
+        self.load_task = load_task
+    
+        self.input_shape = [[-5, 10], [0, 15]]
+
         if self.disjoint_data:
             self.gen_num_samples = sum(self.num_samples) if not self.random_sample else self.num_samples_range[1]*2
         else:
             self.gen_num_samples = max(self.num_samples) if not self.random_sample else self.num_samples_range[1]
 
         noise = .1
-        length_scale = 1 
-        kernel = RBF(length_scale=length_scale)+WhiteKernel(noise_level=noise**2)
-        self.gp = lambda: GaussianProcessRegressor(kernel=kernel)#, optimizer=None)
+#        length_scale = 1 
+#        kernel = RBF(length_scale=length_scale)+WhiteKernel(noise_level=noise**2)
+        self.gp = lambda: GaussianProcessRegressor()#, optimizer=None)
+        gp = self.gp()
 
         if 'gp' in datasource:
             if '1d1d' in datasource:
@@ -138,34 +152,28 @@ class DataGenerator():
         self.fn = fn
 
         self.fbn = lambda f, xs: self.fb((lambda x: self.fn(f, x)), xs)
-
+    
         # task
         # task 0 generate random
-        self.params = [[]]*(self.task_limit+1)
+        self.params = [None]*(self.task_limit+1)
+        if self.load_task is not True:
+            self.params[1:] = [self.task.gen_param(seed=i) for i in range(1, self.task_limit+1)]
+            self.save_tasks(self.log_folder+"task")
+        else:
+            self.load_tasks(self.log_folder+"task")
+
         def fs(xs):
             self.params[0] = self.task.gen_param(seed=np.random.randint(1000))
             return self.fbn((lambda x: self.task.f_(x, self.params[0])), xs)
         self.fs = [fs]
-
-        for i in range(1, self.task_limit+1):
-            self.params[i] = (self.task.gen_param(seed=i))
-            self.fs += [lambda xs: self.fbn((lambda x: self.task.f_(x, self.params[i])), xs)]
-
+        self.fs += list(map(lambda param: (lambda xs: self.fbn((lambda x: self.task.f_(x, param)), xs)), self.params[1:]))
         self.fs = np.array(self.fs)
-        """ 
-        return
-        self.params = [(task.gen_param())]
-        def fs(x):
-            self.params[0] = (self.gen_param())
-            return self.fn(x.reshape(*input_shape), self.params[0]).reshape(*output_shape(x))
-        self.fs = [fs]
-        #self.fs = [lambda x: self.fn(x.reshape(*input_shape), self.gen_param()).reshape(*output_shape(x))]
 
         for i in range(self.task_limit):
             self.params += [self.gen_param()]
             self.fs += [lambda x: self.fn(x.reshape(*input_shape), self.params[i+1]).reshape(*output_shape(x))]
         self.fs = np.array(self.fs)
-
+        """
         elif datasource == 'branin':
             def gen_param():
                 try:
@@ -221,15 +229,17 @@ class DataGenerator():
         """
 
     def save_tasks(self, fname="task"):
+        fn = fname
         for i in range(1, self.task_limit+1):
-            fname += str(i)
-            task.param = self.params[i]
-            task.save_task(fname)
+            fn = fname+str(i)
+            self.task.param = self.params[i]
+            self.task.save_task(fn+'.npy')
 
-    def load_tasks(self, fname=""):
+    def load_tasks(self, fname="task"):
+        fn = fname
         for i in range(1, self.task_limit+1):
-            fname += str(i)
-            self.params[i] = task.save_task(fname)
+            fn = fname+str(i)
+            self.params[i] = self.task.load_task(fn+'.npy')
 
     def get_task_batch(self, batch_size = None, task_limit = None):
         if batch_size is None:
@@ -460,13 +470,17 @@ class DataGenerator():
 
     def plot_task(self, ax, data, task=0, c='c'):
         data = data[self.window_crop(data[:,:self.io_dims[0]])]
+        target = self.fs[task](data)
+        data = np.concatenate((data, target), axis=1)
+        self.plot_data(ax, data, c=c)
+        return
         if 'gp' in self.datasource:
-            target = self.f(data, self.params[task])
+            target = self.task.f_(data, self.params[task])
             data = np.concatenate((data, target), axis=1)
             self.plot_data(ax, data, c=c)
         elif self.datasource == 'branin':
             ax.plot_trisurf(*data[:,:self.io_dims[0]].T, 
-                    self.f(data[:,0], data[:,1]), color=c)
+                    self.task.f_(data[:,0], data[:,1]), color=c)
 
     def plot_branin(self, ax, data, c='c'):
         if self.datasource == 'branin':
