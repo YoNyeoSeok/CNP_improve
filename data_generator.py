@@ -5,6 +5,84 @@ import numpy as np
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF, WhiteKernel
 
+class Dist():
+    def __init__(self, io_dims, input_range):
+        self.io_dims = io_dims
+        self.input_range = input_range
+        self.gen_num_samples = gen_num_samples
+        pass
+    def gen_param(self, seed):
+        pass
+    def f_(self, x, param):
+        pass
+    def f(self, x):
+        pass
+
+class GP():
+    def __init__(self, io_dims, input_range, gen_num_samples):
+        self.io_dims = io_dims
+        self.input_range = input_range
+        self.gen_num_samples = gen_num_samples
+
+        noise = .1
+        length_scale = 1 
+        kernel = RBF(length_scale=length_scale)+WhiteKernel(noise_level=noise**2)
+        self.gp = lambda : GaussianProcessRegressor(kernel=kernel)#, optimizer=None)
+
+        self.param = self.gen_param()
+
+    def gen_param(self, seed=0):
+        x = np.random.rand(self.gen_num_samples, self.io_dims[0])
+        x = (self.input_range[:,1] - self.input_range[:,0])*x + self.input_range[:,0]
+        y = self.gp().sample_y(x)
+        return x, y
+
+    def f_(self, x, param):
+        return self.gp().fit(*param).predict(x)
+
+    def f(self, x):
+        return self.f_(x, self.param)
+    
+    def save_task(self, fname):
+        self.param = np.save(self.param, fname)
+    def load_task(self, fname):
+        self.param = np.load(fname)
+
+class BRANIN():
+    def __init__(self, io_dims, input_range, gen_num_samples):
+        self.io_dims = io_dims
+        self.input_range = input_range
+        self.gen_num_samples = gen_num_samples
+        self.param = self.gen_param()
+
+    def gen_param(self, seed=0):
+        if seed == 0:
+            a, b, c, r, s, t = 1, 5.1/(4*np.pi**2), 5/np.pi, 6, 10, 1/(8*np.pi)
+        else:
+            a, b, c, r, s, t = 1, 5.1/(4*np.pi**2), 5/np.pi, 6, 100*seed, 1/(8*np.pi)
+        return (a, b, c, r, s, t)
+
+    def f_(self, x, param):
+        a, b, c, r, s, t = param
+        x1, x2 = np.split(x, 2, 1)
+        return a*(x2-b*x1**2+c*x1-r)**2 + s*(1-t)*np.cos(x1) + s
+
+    def f(self, x):
+        return self.f_(x, self.param)
+         
+    def save_task(self, fname):
+        self.param = np.save(self.param, fname)
+    def load_task(self, fname):
+        self.param = np.load(fname)
+#    self.f = f
+#    a = 1
+#    self.b = b = 5.1/(4*np.pi**2)
+#    self.c = c = 5/np.pi
+#    self.r = r = 6
+#    self.s = s = 10
+#    self.t = t = 1/(8*np.pi)
+#   #self.f = f = lambda x1, x2: a*(x2-b*x1**2+c*x1-r)**2 + s*(1-t)*np.cos(x1) + s + noise*np.random.randn(*x1.shape)
+
 class DataGenerator():
     def __init__(self, datasource, batch_size, \
             random_sample, disjoint_data, num_samples, num_samples_range, \
@@ -35,62 +113,61 @@ class DataGenerator():
 
         if 'gp' in datasource:
             if '1d1d' in datasource:
-                self.io_dims = [1, 1]
+                self.io_dims = [1,1]
             elif '2d1d' in datasource:
-                self.io_dims = [2, 1]
+                self.io_dims = [2,1]
         elif datasource == 'branin':
             self.io_dims = [2, 1]
-
+            
         if len(np.array(self.input_range).shape) == 1:
             self.input_range = np.repeat([self.input_range], [self.io_dims[0]], axis=0)
         if len(np.array(self.window_range).shape) == 1:
             self.window_range = np.repeat([self.window_range], [self.io_dims[0]], axis=0)
 
+        if 'gp' in datasource:
+            self.task = GP(self.io_dims, self.input_range, self.gen_num_samples)
+        elif datasource == 'branin':
+            self.task = BRANIN(self.io_dims, self.input_range, self.gen_num_samples)
+
         input_shape = (-1, self.io_dims[0])
         output_shape = lambda x: (*x.shape[:-1], self.io_dims[1])
 
-        if 'gp' in datasource:
-            def gen_param():
-                x = np.random.rand(self.gen_num_samples, self.io_dims[0])
-                x = (self.input_range[:,1] - self.input_range[:,0])*x + self.input_range[:,0]
-                y = self.gp().sample_y(x)
-                return x, y
-            self.gen_param = gen_param
+        self.fb = lambda f, x: f(x.reshape(*input_shape)).reshape(*output_shape(x))
+        def fn(f, x):
+            y = f(x)
+            return y + noise*np.random.randn(*y.shape)
+        self.fn = fn
 
-            def f(x, param):
-                return gp.fit(*param).predict(x)
-            self.f = f
+        self.fbn = lambda f, xs: self.fb((lambda x: self.fn(f, x)), xs)
 
-        elif datasource == 'branin':
-            def gen_param():
-                try:
-                    gen_param.first_call
-                    a, b, c, r, s, t = 1, 5.1/(4*np.pi**2), 5/np.pi, 6, 10, 1/(8*np.pi)
-                except AttributeError:
-                    gen_param.first_call = True
-                    a, b, c, r, s, t = 1, 5.1/(4*np.pi**2), 5/np.pi, 6, np.random.uniform(5, 15), 1/(8*np.pi)
-                return (a, b, c, r, s, t)
-            self.gen_param = gen_param
+        # task
+        # task 0 generate random
+        self.params = [[]]*(self.task_limit+1)
+        def fs(xs):
+            self.params[0] = self.task.gen_param(seed=np.random.randint(1000))
+            return self.fbn((lambda x: self.task.f_(x, self.params[0])), xs)
+        self.fs = [fs]
 
-            def f(x, param):
-                a, b, c, r, s, t = param
-                x1, x2 = list(x.T)
-                return a*(x2-b*x1**2+c*x1-r)**2 + s*(1-t)*np.cos(x1) + s
-            self.f = f
-#            a = 1
-#            self.b = b = 5.1/(4*np.pi**2)
-#            self.c = c = 5/np.pi
-#            self.r = r = 6
-#            self.s = s = 10
-#            self.t = t = 1/(8*np.pi)
-            #self.f = f = lambda x1, x2: a*(x2-b*x1**2+c*x1-r)**2 + s*(1-t)*np.cos(x1) + s + noise*np.random.randn(*x1.shape)
+        for i in range(self.task_limit):
+            task = copy(task)
+            self.params += task.gen_param(seed=i)
+            self.fs += lambda x: self.fn(task.f_(x, self.params[i+1]))
 
+        self.fs = np.array(self.fs)
+        """ 
+        return
+        self.params = [(task.gen_param())]
+        def fs(x):
+            self.params[0] = (self.gen_param())
+            return self.fn(x.reshape(*input_shape), self.params[0]).reshape(*output_shape(x))
+        self.fs = [fs]
+        #self.fs = [lambda x: self.fn(x.reshape(*input_shape), self.gen_param()).reshape(*output_shape(x))]
 
-        #self.fs = [lambda x: self.f(x.reshape(*input_shape), self.f_param(x)).reshape(*output_shape(x)) \
-        #        + noise*np.random.randn(*output_shape(x))]
-        #self.fs = [lambda x: self.f(x.reshape(*input_shape)).reshape(*output_shape(x)) \
-        #        + noise*np.random.randn(*output_shape(x))]
-  
+        for i in range(self.task_limit):
+            self.params += [self.gen_param()]
+            self.fs += [lambda x: self.fn(x.reshape(*input_shape), self.params[i+1]).reshape(*output_shape(x))]
+        self.fs = np.array(self.fs)
+
         # batch input, output
         def fb(x, param):
             return self.f(x.reshape(*input_shape), param).reshape(*output_shape(x))
@@ -114,19 +191,18 @@ class DataGenerator():
             self.params += [self.gen_param()]
             self.fs += [lambda x: self.fn(x.reshape(*input_shape), self.params[i+1]).reshape(*output_shape(x))]
         self.fs = np.array(self.fs)
+        """
 
-    def save_task(self, fname=""):
-        self.save_task_params(fname)
-        pass
+    def save_tasks(self, fname="task"):
+        for i in range(1, self.task_limit+1):
+            fname += str(i)
+            task.param = self.params[i]
+            task.save_task(fname)
 
-    def load_task(self, fname=""):
-        pass
-
-    def save_task_params(self, fname=""):
-        pass
-
-    def load_task_params(self, fname=""):
-        pass
+    def load_tasks(self, fname=""):
+        for i in range(1, self.task_limit+1):
+            fname += str(i)
+            self.params[i] = task.save_task(fname)
 
     def get_task_batch(self, batch_size = None, task_limit = None):
         if batch_size is None:
@@ -195,11 +271,56 @@ class DataGenerator():
         xs, ys = self.generate_batch(1)
         return xs[0], ys[0]
     
-    def generate_window_samples(self, window_range=None, step_size=None):
+    def generate_window_samples(self, window_range=None, step_size=None, random=False):
+        if window_range is None:
+            window_range = self.window_range
+        if step_size is None:
+            step_size = self.window_step_size
+        if random:
+            window_range = self.window_range - np.mean(self.window_range, axis=1)
+            window_range += np.random.randint(self.input_range[:,0]-window_range[:,0], self.input_range[:,1]-window_range[:,1])
+
+        try:
+            if window_range is self.window_range and \
+                    step_size is self.window_step_size:
+                return self.window_samples
+        except AttributeError:
+            r = window_range[:,1] - window_range[:,0]
+            l = map(lambda w, r_: np.linspace(w[0], w[1], int(r_/step_size + 1)).reshape(-1, 1),
+                    window_range, r)
+            l = list(l)
+            if self.io_dims[0] == 1:
+                self.window_samples = l[0]
+            elif self.io_dims[0] == 2:
+                x1, x2 = np.meshgrid(l[0], l[1])
+                self.window_samples = \
+                    np.concatenate((x1.reshape(-1, 1), x2.reshape(-1, 1)), axis=1)
+            return self.window_samples 
+
+    def generate_window_samples_(self, window_range=None, step_size=None):
+        if window_range is None:
+            self.window_range = window_range = self.input_range
+        if step_size is None:
+            step_size = self.window_step_size
+
+        r = window_range[:,1] - window_range[:,0]
+        l = map(lambda w, r_: np.linspace(w[0], w[1], int(r_/step_size + 1)).reshape(-1, 1),
+                window_range, r)
+        l = list(l)
+        if self.io_dims[0] == 1:
+            self.window_samples = l[0]
+        elif self.io_dims[0] == 2:
+            x1, x2 = np.meshgrid(l[0], l[1])
+            self.window_samples = \
+                np.concatenate((x1.reshape(-1, 1), x2.reshape(-1, 1)), axis=1)
+        return self.window_samples 
+
+
         if window_range is None:
             window_range = self.input_range
         if step_size is None:
             step_size = self.window_step_size
+
 
         r = window_range[:,1] - window_range[:,0]
         l = map(lambda w, r_: np.linspace(w[0], w[1], int(r_/step_size + 1)).reshape(-1, 1),
