@@ -110,6 +110,20 @@ class DataGenerator():
             self.fs += [lambda x: self.fn(x.reshape(*input_shape), self.params[i+1]).reshape(*output_shape(x))]
         self.fs = np.array(self.fs)
 
+    def save_task(self, fname=""):
+        self.save_task_params(fname)
+        self.fs[1:] = 
+        pass
+
+    def load_task(self, fname=""):
+        pass
+
+    def save_task_params(self, fname=""):
+        pass
+
+    def load_task_params(self, fname=""):
+        pass
+
     def get_task_batch(self, batch_size = None, task_limit = None):
         if batch_size is None:
             batch_size = self.batch_size
