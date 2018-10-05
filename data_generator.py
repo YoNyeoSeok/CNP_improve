@@ -173,7 +173,6 @@ class DataGenerator():
             self.params += [self.gen_param()]
             self.fs += [lambda x: self.fn(x.reshape(*input_shape), self.params[i+1]).reshape(*output_shape(x))]
         self.fs = np.array(self.fs)
-        """
         elif datasource == 'branin':
             def gen_param():
                 try:
@@ -410,11 +409,11 @@ class DataGenerator():
             for i, t in enumerate(x.T)])
 
     def plot_cov(self, ax, data, c='gray'):
-        assert data.shape[1] == 3, "wrong data, need 3 aixs"
+        assert data.shape[1] == 3, "wrong data, need 3 aixs: %s"%str(data.shape)
         ax.fill_between(data[:,0], 
                 data[:,1] - np.sqrt(data[:,2]), 
                 data[:,1] + np.sqrt(data[:,2]),
-                alpha=.5, color=c2)
+                alpha=.5, color=c)
 
     def plot_data(self, ax, data, c='k'):
         data = data[self.window_crop(data[:,:self.io_dims[0]])]
@@ -457,7 +456,7 @@ class DataGenerator():
     def plot_gp(self, ax, gp, data, c='c'):
         data = data[self.window_crop(data[:,:self.io_dims[0]])]
         mu, cov = gp.predict(data[:, :self.io_dims[0]], return_cov=True)
-        data = np.concatenate((data, mu, cov), axis=1)
+        data = np.concatenate((data, mu, np.diag(cov).reshape(-1, 1)), axis=1)
         self.plot_data(ax, data, c)
         return
         if self.io_dims == [1, 1]:
