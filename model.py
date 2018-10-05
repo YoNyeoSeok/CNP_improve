@@ -67,11 +67,14 @@ class CNP_Net(nn.Module):
             return
         self.mu = self.phi[:,:self.io_dims[1]]
         self.sig = self.softplus(self.phi[:,self.io_dims[1]:])
+        self.cov = torch.sig**2
         
-        log_probs = -0.5*torch.log(2*np.pi*self.sig**2) - 0.5*(self.mu-T[:,self.io_dims[0]:])**2/self.sig**2
+        log_probs = -0.5*torch.log(2*np.pi*self.cov) - 0.5*(self.mu-T[:,self.io_dims[0]:])**2/self.cov
         log_prob = torch.sum(log_probs)
         
-        return self.phi, log_prob/len(log_probs)
+        #print(torch.cat((self.mu, self.cov), dim=1))
+        return torch.cat((self.mu, self.cov), dim=1), log_prob/len(log_probs)
+    #return self.phi, log_prob/len(log_probs)
 
 
         """

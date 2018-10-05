@@ -65,7 +65,7 @@ class BRANIN():
         if seed == 0:
             a, b, c, r, s, t = 1, 5.1/(4*np.pi**2), 5/np.pi, 6, 10, 1/(8*np.pi)
         else:
-            a, b, c, r, s, t = 1, 5.1/(4*np.pi**2), 5/np.pi, 6, 100*(seed-1)+10, 1/(8*np.pi)
+            a, b, c, r, s, t = 1, 5.1/(4*np.pi**2), 5/np.pi, 6, 500*(seed-1)+10, 1/(8*np.pi)
         return (a, b, c, r, s, t)
 
     def f_(self, x, param):
