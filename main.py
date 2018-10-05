@@ -181,7 +181,7 @@ def main():
                     phi = phi.cpu()
 
                 predict_y_mu = phi[:,:data_generator.io_dims[1]].data.numpy()
-                predict_y_cov = phi[:,data_generator.io_dims[1]:].data.numpy()**2
+                predict_y_cov = phi[:,data_generator.io_dims[1]:].data.numpy()
     
                 train_data = np.concatenate((x_train, y_train), axis=1)
                 window_data = np.concatenate((window_samples, predict_y_mu, predict_y_cov), axis=1)
