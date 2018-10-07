@@ -98,6 +98,7 @@ def main():
                                     'g':[128, 64, 32, 16, 8]})#.float()
     else:
         model = CNP_Net(io_dims=data_generator.io_dims)#.float()
+    epoch_start = int(args.load_model.split('.')[0]) if args.load_model is not None else 0
 
     model.double()
     model.to(device)
@@ -114,7 +115,7 @@ def main():
         print('preprocess', time.time()-t)
         t = time.time()
 
-    for t in range(args.max_epoch):
+    for t in range(epoch_start, args.max_epoch):
         loss = 0
         
         train_batch, test_batch, _ = data_generator.get_train_test_batch(args.batch_size)

@@ -54,10 +54,34 @@ class CNP_Net(nn.Module):
         self.net_g = Net_g(layers_dim['g'], io_dims)
         self.operator = torch.mean
         self.softplus = nn.Softplus()
+        self.b1 = nn.BatchNorm1d(9)
+        self.b2 = nn.BatchNorm1d(9)
 
     def forward(self, O, T):
-        import time
-        t = time.time()
+        self.r = self.operator(self.net_h(O), dim=0).reshape(1, -1)
+        h1 = F.linear(T[:, :self.io_dims[0]], torch.t(self.r[:, :self.io_dims[0]*9].reshape(self.io_dims[0], 9)))
+        b1 = self.b1(h1)
+        a1 = F.relu(b1)
+        h2 = F.linear(a1, torch.t(self.r[:, self.io_dims[0]*9:self.io_dims[0]*9+81].reshape(9, 9)))
+        b2 = self.b2(h2)
+        a2 = F.relu(b2)
+        self.phi = F.linear(a2, torch.t(self.r[:, self.io_dims[0]*9+81:self.io_dims[0]*9+81+self.io_dims[1]*2*9].reshape(9, self.io_dims[1]*2)))
+
+        if self.io_dims[1] != 1: 
+            print("multivariate regression is not supported")
+            return
+        self.mu = self.phi[:,:self.io_dims[1]]
+        self.sig = self.softplus(self.phi[:,self.io_dims[1]:])
+        self.cov = self.sig**2
+        
+        log_probs = -0.5*torch.log(2*np.pi*self.cov) - 0.5*(self.mu-T[:,self.io_dims[0]:])**2/self.cov
+        log_prob = torch.sum(log_probs)
+        
+        #print(torch.cat((self.mu, self.cov), dim=1))
+        return torch.cat((self.mu, self.cov), dim=1), log_prob/len(log_probs)
+
+
+    def forward_(self, O, T):
         self.r = self.operator(self.net_h(O), dim=0).expand(T.shape[0], -1)
         self.xr = torch.cat((self.r, T[:,:self.io_dims[0]]), dim=1)
         self.phi = self.net_g(self.xr)
