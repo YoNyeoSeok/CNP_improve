@@ -409,11 +409,22 @@ class DataGenerator():
             for i, t in enumerate(x.T)])
 
     def plot_cov(self, ax, data, c='gray'):
-        assert data.shape[1] == 3, "wrong data, need 3 aixs: %s"%str(data.shape)
+        if data.shape[1] != 3:
+            return
+        #assert data.shape[1] == 3, "wrong data, need 3 aixs: %s"%str(data.shape)
         ax.fill_between(data[:,0], 
                 data[:,1] - np.sqrt(data[:,2]), 
                 data[:,1] + np.sqrt(data[:,2]),
                 alpha=.5, color=c)
+
+    def plot_cov_(self, ax, data, c='gray'):
+        if data.shape[1] != 3:
+            return
+        #assert data.shape[1] == 3, "wrong data, need 3 aixs: %s"%str(data.shape)
+        ax.plot(data[:,0], 
+                np.sqrt(data[:,2]), 
+                color=c)
+
 
     def plot_data(self, ax, data, c='k'):
         data = data[self.window_crop(data[:,:self.io_dims[0]])]
@@ -422,6 +433,7 @@ class DataGenerator():
             self.plot_cov(ax, data)
         elif self.io_dims == [2, 1]:
             ax.plot_trisurf(data[:,0], data[:,1], data[:,2], color=c)
+            self.plot_cov_(ax, data)
         return
 
         

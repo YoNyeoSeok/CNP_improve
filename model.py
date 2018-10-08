@@ -57,7 +57,7 @@ class CNP_Net(nn.Module):
         self.b1 = nn.BatchNorm1d(9)
         self.b2 = nn.BatchNorm1d(9)
 
-    def forward(self, O, T):
+    def forward_(self, O, T):
         self.r = self.operator(self.net_h(O), dim=0).reshape(1, -1)
         h1 = F.linear(T[:, :self.io_dims[0]], torch.t(self.r[:, :self.io_dims[0]*9].reshape(self.io_dims[0], 9)))
         b1 = self.b1(h1)
@@ -81,7 +81,7 @@ class CNP_Net(nn.Module):
         return torch.cat((self.mu, self.cov), dim=1), log_prob/len(log_probs)
 
 
-    def forward_(self, O, T):
+    def forward(self, O, T):
         self.r = self.operator(self.net_h(O), dim=0).expand(T.shape[0], -1)
         self.xr = torch.cat((self.r, T[:,:self.io_dims[0]]), dim=1)
         self.phi = self.net_g(self.xr)
