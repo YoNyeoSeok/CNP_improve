@@ -22,6 +22,8 @@ parser.add_argument("--interval", type=int, default=1000,
         help='max iteration (default=10000')
 parser.add_argument("-lr", "--learning_rate", type=float, default=1e-4,
         help="learning rate (default=1e-4)")
+parser.add_argument("-wd", "--weight_decay", type=float, default=.0,
+        help="weight decay(default=0)")
 parser.add_argument("-bs", "--batch_size", type=int, nargs='?', default=32,
         help='batch size (default: 32)')
 parser.add_argument("-ns", "--num_samples", type=int, nargs=2, default=[5, 5],
@@ -103,7 +105,7 @@ def main():
     model.double()
     model.to(device)
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
 
     if args.fig_show:
         fig = plt.figure()
